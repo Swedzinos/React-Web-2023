@@ -1,0 +1,16 @@
+table, input{
+    border-collapse: collapse;
+    width: 75%;
+    background-color: rgba(255, 255, 255, 0.5);
+
+  }
+  
+th, td {
+    text-align: center;
+    padding: 8px;
+    border: 2px solid;
+  }
+  div, input{
+    overflow-x:auto;
+    
+  }
