@@ -123,7 +123,7 @@ class List extends React.Component {
       </tr>
     );
     return (
-      <table>
+      <table id="scroll_style">
         <thead>
           {header}
           <AddThings />
@@ -132,7 +132,7 @@ class List extends React.Component {
           <DBThings />
         </tbody>
         <tfoot>
-          
+
         </tfoot>
       </table>
     );

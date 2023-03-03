@@ -1,6 +1,7 @@
 table{
     border-collapse: collapse;
     width: 75%;
+    height: 100%;
     background-color: rgba(255, 255, 255, 0.5);
     overflow-y:auto;
     overflow-x:auto;
@@ -8,14 +9,36 @@ table{
     position:absolute;
     right:25%;
     display: block;
+    margin-left: 30px;
+	  float: left;
   }
+  #scroll_style::-webkit-scrollbar-track
+  {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    background-color: #F5F5F5;
+  }
+  
+  #scroll_style::-webkit-scrollbar
+  {
+    width: 12px;
+    background-color: #F5F5F5;
+  }
+  
+  #scroll_style::-webkit-scrollbar-thumb
+  {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #555;
+  }
+  
 input{
     border-collapse: collapse;
     width: 75%;
     background-color: rgba(255, 255, 255, 0.5);
-    overflow-y:scroll;
-    float: left;
+    overflow-y:auto;
     overflow-x:auto;
+    float: left;
 }
   
 th, td {
