@@ -1,8 +1,17 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
+import isClicked from "./Sidebar";
+import Sidebar from "./Sidebar";
 
 import "../css/List.css";
 
+const isClickedList = () => {
+  
+  const [isClickedList, setisClickedList] = useState(false);
+
+  const getState = isClicked => setisClickedList(isClicked);
+  return isClickedList;
+}
 function DBThings() {
   const [postList, setPostList] = useState([]);
 
@@ -109,8 +118,10 @@ function AddThings() {
   );
   return setData;
 }
+
 class List extends React.Component {
   render() {
+    
     const header = (
       <tr>
         <th>Nr laboranta</th>
@@ -125,7 +136,7 @@ class List extends React.Component {
       </tr>
     );
     return (
-      <table id="scroll_style">
+      <table id={isClickedList ? 'tableClicked':'tableNoClicked'} className="scroll_style">
         <thead>
           {header}
           <AddThings />

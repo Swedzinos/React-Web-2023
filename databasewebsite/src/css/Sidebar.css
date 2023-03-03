@@ -1,9 +1,26 @@
-.sidebar{
+#sidebar {
     float: right;
-    text-align:right;
+    display: block;
+    width: 5%;
+    position:absolute;
+    left:95%;
+    height: 100%;
+    right: 0%;
+}
+img{
+    position: relative;
+    width: 30px;
+    height: 30px;
+}
+button {
+    margin-top: 10px;
+}
+#sidebar-clicked{
+    float: right;
+    display: block;
     width: 25%;
     position:absolute;
-    left:75%;
-    height: 90%;
-    transition: all 0.5s ease
+    left:95%;
+    height: 100%;
+    right: 0%;
 }
