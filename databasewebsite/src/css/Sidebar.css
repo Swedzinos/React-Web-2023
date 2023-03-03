@@ -1,8 +1,9 @@
-h1{
+.sidebar{
     float: right;
     text-align:right;
     width: 25%;
     position:absolute;
     left:75%;
     height: 90%;
+    transition: all 0.5s ease
 }
