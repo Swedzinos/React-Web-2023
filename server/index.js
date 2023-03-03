@@ -1,6 +1,6 @@
-const express = require("express");
-const db = require("./config/db.js");
-const cors = require("cors");
+import express from "express";
+import db from "./config/db.js";
+import cors from "cors";
 
 const app = express();
 const PORT = 3002;
