@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-
 import App from '../src/components/App.js';
-import Sidebar from '../src/components/Sidebar.js';
 
 import './css/index.css';
 

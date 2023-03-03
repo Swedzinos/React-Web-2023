@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
-import isClicked from "./Sidebar";
-import Sidebar from "./Sidebar";
+import "../css/Sidebar.css";
+import menu from "./menu.png"
+
 
 import "../css/List.css";
 
-const isClickedList = () => {
-  
-  const [isClickedList, setisClickedList] = useState(false);
 
-  const getState = isClicked => setisClickedList(isClicked);
-  return isClickedList;
-}
 function DBThings() {
   const [postList, setPostList] = useState([]);
 
@@ -118,25 +113,33 @@ function AddThings() {
   );
   return setData;
 }
-
-class List extends React.Component {
-  render() {
-    
-    const header = (
-      <tr>
-        <th>Nr laboranta</th>
-        <th>Ilość</th>
-        <th>Miejsce</th>
-        <th>Nazwa sprzętu</th>
-        <th>Nr inw.</th>
-        <th>Użytkownik</th>
-        <th>Rodzaj sprzętu</th>
-        <th>Typ sprzętu</th>
-        <th>Do wybrakowania</th>
-      </tr>
-    );
-    return (
-      <table id={isClickedList ? 'tableClicked':'tableNoClicked'} className="scroll_style">
+const Open = (props) => {
+  const header = (
+    <tr>
+      <th>Nr laboranta</th>
+      <th>Ilość</th>
+      <th>Miejsce</th>
+      <th>Nazwa sprzętu</th>
+      <th>Nr inw.</th>
+      <th>Użytkownik</th>
+      <th>Rodzaj sprzętu</th>
+      <th>Typ sprzętu</th>
+      <th>Do wybrakowania</th>
+    </tr>
+  );
+  
+  
+  const [isClicked, serIsClicked] = useState(false)
+  const buttonHandler = () => {
+    serIsClicked(current => !current)
+  }
+    useEffect( () => {
+      console.log(isClicked);
+  }, [isClicked]);
+  return(
+    <>
+    <div>
+      <table id={isClicked ? "tableClicked":"tableNoClicked"} className="scroll_style">
         <thead>
           {header}
           <AddThings />
@@ -145,9 +148,27 @@ class List extends React.Component {
           <DBThings />
         </tbody>
         <tfoot>
-
+          
         </tfoot>
       </table>
+    </div>
+    
+      <div id={isClicked ? "sidebar-clicked":"sidebar"} >
+        <button onClick = {buttonHandler}><img src={menu}/></button>
+        <a href="#" id={isClicked ? "navElementOpen":"navElementClosed"}>Link 1</a>
+        <a href="#" id={isClicked ? "navElementOpen":"navElementClosed"}>Link 2</a>
+        <a href="#" id={isClicked ? "navElementOpen":"navElementClosed"}>Link 3</a>
+      </div>
+    </>
+  );
+
+}
+
+
+class List extends React.Component {
+  render() {
+    return (
+      <Open/>
     );
   }
 }

@@ -6,6 +6,8 @@
     left:95%;
     height: 100%;
     right: 0%;
+    background-color: rgba(255, 255, 255, 0.5);
+    transition-duration: 0.5s;
 }
 img{
     position: relative;
@@ -16,11 +18,22 @@ button {
     margin-top: 10px;
 }
 #sidebar-clicked{
+    background-color: rgba(255, 255, 255, 0.5);
     float: right;
     display: block;
     width: 25%;
     position:absolute;
-    left:95%;
+    left:75%;
     height: 100%;
     right: 0%;
+    transition-duration: 0.5s;
+}
+#navElementClosed{
+    display: none;
+}
+#navElementOpen{
+    display: block;
+    width: 100%;
+    align-items: center;
+
 }
