@@ -11,7 +11,6 @@ root.render(
   <React.StrictMode>
     <main>
       <App/>
-      <Sidebar/>
     </main>
   </React.StrictMode>
 );

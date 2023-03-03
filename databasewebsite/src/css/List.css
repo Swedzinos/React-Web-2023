@@ -1,16 +1,25 @@
-table, input{
+table{
     border-collapse: collapse;
     width: 75%;
     background-color: rgba(255, 255, 255, 0.5);
-
+    overflow-y:auto;
+    overflow-x:auto;
+    float: left;
+    position:absolute;
+    right:25%;
+    display: block;
   }
+input{
+    border-collapse: collapse;
+    width: 75%;
+    background-color: rgba(255, 255, 255, 0.5);
+    overflow-y:scroll;
+    float: left;
+    overflow-x:auto;
+}
   
 th, td {
     text-align: center;
     padding: 8px;
     border: 2px solid;
-  }
-  div, input{
-    overflow-x:auto;
-    
   }

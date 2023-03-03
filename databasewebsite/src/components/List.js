@@ -53,9 +53,7 @@ function AddThings() {
   const setData = (
     <tr>
       <th>
-        <select name="nrlaboranta">
-          {/* wczytuje z bazy */}
-        </select>
+        <select name="nrlaboranta">{/* wczytuje z bazy */}</select>
       </th>
       <th>
         <input
@@ -66,9 +64,7 @@ function AddThings() {
         />
       </th>
       <th>
-        <select name="miejsce">
-          {/* miejsca z bazy danych */}
-        </select>
+        <select name="miejsce">{/* miejsca z bazy danych */}</select>
       </th>
       <th>
         <input
@@ -87,9 +83,7 @@ function AddThings() {
         />
       </th>
       <th>
-        <select name="uzytkownik">
-          {/* z bazy danych */}
-        </select>
+        <select name="uzytkownik">{/* z bazy danych */}</select>
       </th>
       <th>
         <select name="rodzajsprzetu">
@@ -129,19 +123,18 @@ class List extends React.Component {
       </tr>
     );
     return (
-      <div>
-        <h1>Tu bedzie Lista</h1>
-        <table>
-          <thead>
-            {header}
-            <AddThings />
-          </thead>
-          <tbody>
-            <DBThings />
-          </tbody>
-          <tfoot></tfoot>
-        </table>
-      </div>
+      <table>
+        <thead>
+          {header}
+          <AddThings />
+        </thead>
+        <tbody>
+          <DBThings />
+        </tbody>
+        <tfoot>
+          
+        </tfoot>
+      </table>
     );
   }
 }
