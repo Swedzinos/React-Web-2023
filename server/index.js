@@ -18,7 +18,7 @@ app.get("/api/get", (req, res) => {
 });
 
 // Route to get one thing aka search by id
-app.get("/api/getFromId/:id", (req, res) => {
+app.get("/api/get/id=:id", (req, res) => {
   const id = req.params.id;
   db.query("SELECT * FROM inwentarz WHERE id = ?", id, (err, result) => {
     if (err) {
