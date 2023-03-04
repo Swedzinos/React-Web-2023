@@ -1,31 +1,21 @@
-#tableNoClicked {
-    border-collapse: collapse;
-    width: 95%;
+.inventory_table {
+    display: block;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.5);
+    position: absolute;
+    float: left;
     overflow-y: auto;
     overflow-x: auto;
-    float: left;
-    position: absolute;
-    display: block;
-    right: 5%;
-    margin-left: 30px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-collapse: collapse;
     transition-duration: 0.5s;
+
+    width: 95%;
+    right: 5%;
 }
 
-#tableClicked {
-    border-collapse: collapse;
+.clicked {
     width: 75%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.5);
-    overflow-y: auto;
-    overflow-x: auto;
-    float: left;
-    position: absolute;
     right: 25%;
-    display: block;
-    margin-left: 30px;
-    transition-duration: 0.5s;
 }
 
 .scroll_style::-webkit-scrollbar-track {
@@ -54,8 +44,7 @@ input {
     float: left;
 }
 
-th,
-td {
+th, td {
 
     text-align: center;
     padding: 8px;

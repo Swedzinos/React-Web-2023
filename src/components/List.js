@@ -26,7 +26,7 @@ const DBThings = () => {
             <td>{val.Do_wybrakowania}</td>
         </tr>
     ));
-    
+
     return showThings;
 }
 const AddThings = () => {
@@ -138,7 +138,7 @@ const Open = (props) => {
     return (
         <>
             <div>
-                <table id={isClicked ? "tableClicked" : "tableNoClicked"} className="scroll_style">
+                <table className={"inventory_table scroll_style " + (isClicked ? "clicked" : "")}>
                     <thead>
                         {header}
                         <AddThings />
