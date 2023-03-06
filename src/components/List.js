@@ -1,33 +1,25 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
+import GetData from "./GetData.js";
 import "../css/Sidebar.css";
 import "../css/List.css";
 
-
-const DBThings = () => {
-    const [postList, setPostList] = useState([]);
-
-    useEffect(() => {
-        Axios.get("http://localhost:3002/api/get").then((data) => {
-            setPostList(data.data);
-        });
-    }, []);
-
-    const showThings = postList.map((val, key) => (
+const SetUpData = () => {
+    const showData = GetData().map((val) => (
         <tr key={val.id}>
             <td>{val.Nr_laboranta}</td>
             <td>{val.Ilość}</td>
             <td>{val.Miejsce}</td>
             <td>{val.Nazwa_sprzętu}</td>
             <td>{val.Nr_inwentarzowy}</td>
-            <td>{val.Użytkownik_sprzętu}</td>
+            <td>{val.Uzytkownik_sprzetu}</td>
             <td>{val.Rodzaj_sprzętu}</td>
             <td>{val.Typ_sprzętu}</td>
             <td>{val.Do_wybrakowania}</td>
         </tr>
     ));
 
-    return showThings;
+    return showData;
 }
 const AddThings = () => {
     const [Nr_laboranta, setNr_laboranta] = useState("");
@@ -53,42 +45,86 @@ const AddThings = () => {
             Do_wybrakowania: Do_wybrakowania,
         });
     };
-    const setData = (
+
+    const GetLabsNrs = () => {
+        useEffect(() => {
+            console.log(Nr_laboranta);
+        }, [Nr_laboranta]);
+
+        return (
+            <>
+                <select value={Nr_laboranta} name="labNr" onChange={(e) => { 
+                    setNr_laboranta(e.target.value);
+                }}>
+                    { GetData().map((val) => (
+                        <option key={val.id} value={val.Nr_laboranta}> 
+                            {val.Nr_laboranta} 
+                        </option>  
+                    ))}
+                </select>
+            </>
+        );
+    }
+
+    const GetPlaces = () => {
+        useEffect(() => {
+            console.log(Miejsce);
+        }, [Miejsce]);
+
+        return (
+            <>
+                <select value={Miejsce} name="place" onChange={(e) => { 
+                    setMiejsce(e.target.value);
+                }}>
+                    { GetData().map((val) => (
+                        <option key={val.id} value={val.Miejsce}> 
+                            {val.Miejsce} 
+                        </option>  
+                    ))}
+                </select>
+            </>
+        );
+    }
+
+    const GetUsers = () => {
+        useEffect(() => {
+            console.log(Uzytkownik_sprzetu);
+        }, [Uzytkownik_sprzetu]);
+
+        return (
+            <>
+                <select value={Uzytkownik_sprzetu} name="user" onChange={(e) => { 
+                    setUzytkownik_sprzetu(e.target.value);
+                }}>
+                    { GetData().map((val) => (
+                        <option key={val.id} value={val.Uzytkownik_sprzetu}> 
+                            {val.Uzytkownik_sprzetu} 
+                        </option>  
+                    ))}
+                </select>
+            </>
+        );
+    }
+
+    const tableData = (
         <tr>
             <th>
-                <select name="nrlaboranta" onChange={(e) => { setNr_laboranta(e.target.value); }}>
-                    {/* wczytuje z bazy */}
-                    <option value="2255">2255</option>
-                    <option value="145">145</option>
-                    <option value="1658">1658</option>
-                </select>
+                <GetLabsNrs />
             </th>
             <th>
                 <input type="ilosc" onChange={(e) => { setIlosc(e.target.value); }} />
             </th>
             <th>
-                <select name="miejsce" onChange={(e) => { setMiejsce(e.target.value); }}>
-                    {/* miejsca ma byc z bazy danych*/}
-                    <option value="Sala 215">Sala 215</option>
-                    <option value="Sala 105">Sala 105</option>
-                    <option value="Sala 50">Sala 50</option>
-                    <option value="Hala">Hala</option>
-                </select>
+                <GetPlaces />
             </th>
             <th>
                 <input type="text" onChange={(e) => { setNazwa_sprzetu(e.target.value); }} />
             </th>
             <th>
-                <input type="text" onChange={(e) => { setNr_inwentarzowy(e.target.value); }}
-                />
+                <input type="text" onChange={(e) => { setNr_inwentarzowy(e.target.value); }} />
             </th>
             <th>
-                <select name="uzytkownik" onChange={(e) => { setUzytkownik_sprzetu(e.target.value); }}>
-                    {/*ma byc z bazy danych */}
-                    <option value="Kamil Bank">Kamil Bank</option>
-                    <option value="Michał Psikuta">Michał Psikuta</option>
-                    <option value="Raul Wierzbiński">Raul Wierzbiński</option>
-                </select>
+                <GetUsers />
             </th>
             <th>
                 <select name="rodzajsprzetu" onChange={(e) => { setRodzaj_sprzetu(e.target.value); }}>
@@ -110,9 +146,9 @@ const AddThings = () => {
             </th>
         </tr>
     );
-    return setData;
+    return tableData;
 }
-const Open = (props) => {
+const TableUI = () => {
     const header = (
         <tr>
             <th>Nr laboranta</th>
@@ -128,9 +164,9 @@ const Open = (props) => {
     );
 
 
-    const [isClicked, serIsClicked] = useState(false)
+    const [isClicked, setIsClicked] = useState(false)
     const buttonHandler = () => {
-        serIsClicked(current => !current)
+        setIsClicked(current => !current)
     }
     useEffect(() => {
         console.log(isClicked);
@@ -144,7 +180,7 @@ const Open = (props) => {
                         <AddThings />
                     </thead>
                     <tbody>
-                        <DBThings />
+                        <SetUpData />
                     </tbody>
                     <tfoot>
 
@@ -169,7 +205,7 @@ const Open = (props) => {
 class List extends React.Component {
     render() {
         return (
-            <Open />
+            <TableUI />
         );
     }
 }

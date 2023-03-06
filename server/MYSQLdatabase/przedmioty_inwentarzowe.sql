@@ -35,7 +35,7 @@ CREATE TABLE `inwentarz` (
   `Miejsce` varchar(20) NOT NULL,
   `Nazwa_sprzętu` varchar(20) NOT NULL DEFAULT '',
   `Nr_inwentarzowy` varchar(20) NOT NULL DEFAULT '',
-  `Użytkownik_sprzętu` varchar(50) DEFAULT NULL,
+  `Uzytkownik_sprzetu` varchar(50) DEFAULT NULL,
   `Rodzaj_sprzętu` varchar(20) NOT NULL DEFAULT '',
   `Typ_sprzętu` varchar(20) NOT NULL DEFAULT '',
   `Do_wybrakowania` varchar(3) NOT NULL DEFAULT ''
@@ -45,7 +45,7 @@ CREATE TABLE `inwentarz` (
 -- Zrzut danych tabeli `inwentarz`
 --
 
-INSERT INTO `inwentarz` (`id`, `Nr_laboranta`, `Ilość`, `Miejsce`, `Nazwa_sprzętu`, `Nr_inwentarzowy`, `Użytkownik_sprzętu`, `Rodzaj_sprzętu`, `Typ_sprzętu`, `Do_wybrakowania`) VALUES
+INSERT INTO `inwentarz` (`id`, `Nr_laboranta`, `Ilość`, `Miejsce`, `Nazwa_sprzętu`, `Nr_inwentarzowy`, `Uzytkownik_sprzetu`, `Rodzaj_sprzętu`, `Typ_sprzętu`, `Do_wybrakowania`) VALUES
 (1, '224', '1', 'sala 225', 'Laptop acer', '12655', 'Kamil Bank', 'Elektronika', 'stanowy', 'Nie'),
 (2, '1265', '1', 'sala 22', 'Komputer', '2255', '', 'Elektronika', 'Bezstanowy', 'Tak');
 

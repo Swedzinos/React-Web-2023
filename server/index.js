@@ -40,7 +40,7 @@ app.post("/api/create", (req, res) => {
   const typ_sprzętu = req.body.Typ_sprzetu;
   const do_wybrakowania = req.body.Do_wybrakowania;
 
-  db.query("INSERT INTO inwentarz (Nr_laboranta, Ilość, Miejsce, Nazwa_sprzętu, Nr_inwentarzowy, Użytkownik_sprzętu, Rodzaj_sprzętu, Typ_sprzętu, Do_wybrakowania) VALUES (?,?,?,?,?,?,?,?,?)",
+  db.query("INSERT INTO inwentarz (Nr_laboranta, Ilość, Miejsce, Nazwa_sprzętu, Nr_inwentarzowy, Uzytkownik_sprzetu, Rodzaj_sprzętu, Typ_sprzętu, Do_wybrakowania) VALUES (?,?,?,?,?,?,?,?,?)",
     [nr_laboranta, ilosc, miejsce, nazwa_sprzetu, nr_inwentarzowy, uzytkownik_sprzetu, rodzaj_sprzętu, typ_sprzętu, do_wybrakowania],
     (err, result) => {
       if (err) {
