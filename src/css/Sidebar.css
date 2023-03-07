@@ -1,39 +1,24 @@
-#sidebar {
-    float: right;
-    display: block;
+* {
+    box-sizing: border-box;
+}
+.sidebar {
     width: 5%;
-    position:absolute;
-    left:95%;
     height: 100%;
-    right: 0%;
-    background-color: rgba(255, 255, 255, 0.5);
+    padding: 1em 2.5em;
+    position: absolute;
+    left: 95%;
     transition-duration: 0.5s;
 }
-img{
-    position: relative;
-    width: 30px;
-    height: 30px;
-}
-button {
-    margin-top: 10px;
-}
-#sidebar-clicked{
-    background-color: rgba(255, 255, 255, 0.5);
-    float: right;
-    display: block;
+.sidebarActive {
     width: 25%;
-    position:absolute;
-    left:75%;
-    height: 100%;
-    right: 0%;
-    transition-duration: 0.5s;
+    left: 75%;
 }
-#navElementClosed{
-    display: none;
-}
-#navElementOpen{
+.navElementOpen {
     display: block;
     width: 100%;
     align-items: center;
 
+}
+.navElementClosed {
+    display: none;
 }

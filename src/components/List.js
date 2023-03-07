@@ -112,16 +112,31 @@ const AddThings = () => {
                 <GetLabsNrs />
             </th>
             <th>
-                <input type="ilosc" onChange={(e) => { setIlosc(e.target.value); }} />
+                <div className="inp-box">
+                    <input class="inp-effect" type="text" placeholder="Ilość..." onChange={(e) => { setIlosc(e.target.value); }}/>
+                    <span class="focus-border">
+                        <i></i>
+                    </span>
+                </div>
             </th>
             <th>
                 <GetPlaces />
             </th>
             <th>
-                <input type="text" onChange={(e) => { setNazwa_sprzetu(e.target.value); }} />
+                <div className="inp-box">
+                    <input class="inp-effect" type="text" placeholder="Nazwa sprzętu..." onChange={(e) => { setNazwa_sprzetu(e.target.value); }} />
+                    <span class="focus-border">
+                        <i></i>
+                    </span>
+                </div>
             </th>
             <th>
-                <input type="text" onChange={(e) => { setNr_inwentarzowy(e.target.value); }} />
+                <div className="inp-box">
+                    <input class="inp-effect" type="number" placeholder="Numer inwentarzowy..." onChange={(e) => { setNr_inwentarzowy(e.target.value); }} />
+                    <span class="focus-border">
+                        <i></i>
+                    </span>
+                </div>
             </th>
             <th>
                 <GetUsers />
@@ -188,13 +203,13 @@ const TableUI = () => {
                 </table>
             </div>
 
-            <div id={isClicked ? "sidebar-clicked" : "sidebar"} >
+            <div className={(isClicked ? "sidebarActive" : "") + " sidebar"} >
                 <button onClick={buttonHandler}>
                     <i className="fa-solid fa-bars"></i>
                 </button>
-                <a href="#" id={isClicked ? "navElementOpen" : "navElementClosed"}>Link 1</a>
-                <a href="#" id={isClicked ? "navElementOpen" : "navElementClosed"}>Link 2</a>
-                <a href="#" id={isClicked ? "navElementOpen" : "navElementClosed"}>Link 3</a>
+                <a href="#" className={isClicked ? "navElementOpen" : "navElementClosed"}>Link 1</a>
+                <a href="#" className={isClicked ? "navElementOpen" : "navElementClosed"}>Link 2</a>
+                <a href="#" className={isClicked ? "navElementOpen" : "navElementClosed"}>Link 3</a>
             </div>
         </>
     );

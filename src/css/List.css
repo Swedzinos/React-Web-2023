@@ -1,16 +1,26 @@
+@import url("./inputs.css");
+
 .inventory_table {
-    display: block;
-    height: 100%;
+    width: 95%;
     position: absolute;
-    float: left;
-    overflow-y: auto;
-    overflow-x: auto;
+    right: 5%;
+    overflow: auto;
     background-color: rgba(255, 255, 255, 0.5);
     border-collapse: collapse;
     transition-duration: 0.5s;
+}
+.inventory_table th, td {
 
-    width: 95%;
-    right: 5%;
+    text-align: center;
+    padding: 8px;
+    border: 2px solid;
+}
+
+input {
+    border-collapse: collapse;
+    width: 75%;
+    background-color: rgba(255, 255, 255, 0.5);
+    overflow: auto;
 }
 
 .clicked {
@@ -33,20 +43,4 @@
     border-radius: 10px;
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
     background-color: #555;
-}
-
-input {
-    border-collapse: collapse;
-    width: 75%;
-    background-color: rgba(255, 255, 255, 0.5);
-    overflow-y: auto;
-    overflow-x: auto;
-    float: left;
-}
-
-th, td {
-
-    text-align: center;
-    padding: 8px;
-    border: 2px solid;
 }
