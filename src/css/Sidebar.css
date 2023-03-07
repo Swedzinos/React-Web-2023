@@ -9,12 +9,12 @@
     left: 95%;
     transition-duration: 0.5s;
 }
-.sidebarActive {
+.sidebarActive{
+    background-color: rgba(255, 255, 255, 0.5);
     width: 25%;
     left: 75%;
 }
 .navElementOpen {
-    display: block;
     width: 100%;
     align-items: center;
 
