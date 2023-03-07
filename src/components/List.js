@@ -217,7 +217,7 @@ const TableUI = () => {
                 </table>
             </div>
 
-            <div className={(isClicked ? "sidebarActive":"") + "sidebar"} >
+            <div className={(isClicked ? "sidebarActive":"") + " sidebar"} >
                     <button onClick={buttonHandler} >
                         <i className="fa-solid fa-bars"></i>
                     </button>
