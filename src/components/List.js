@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Axios from "axios";
 import GetData from "./GetData.js";
 import SearchData from "./SearchData.js"
@@ -39,27 +39,29 @@ const TableUI = () => {
         
     const [SearchValue, setSearchValue] = useState("");    
 
-    const [Nr_laboranta, setNr_laboranta] = useState("");
-    const [Ilosc, setIlosc] = useState("");
-    const [Miejsce, setMiejsce] = useState("");
-    const [Nazwa_sprzetu, setNazwa_sprzetu] = useState("");
-    const [Nr_inwentarzowy, setNr_inwentarzowy] = useState("");
-    const [Uzytkownik_sprzetu, setUzytkownik_sprzetu] = useState("");
-    const [Rodzaj_sprzetu, setRodzaj_sprzetu] = useState("");
-    const [Typ_sprzetu, setTyp_sprzetu] = useState("");
-    const [Do_wybrakowania, setDo_wybrakowania] = useState("");
-    const GetLabsNrs = () => {
-        useEffect(() => {
-            console.log(Nr_laboranta);
-        }, [Nr_laboranta]);
+    /*  Aby uzyskac dostep do wartosci z zmiennych uzywajacych useRef (te poniezej):
 
+        <nazwa_zmiennej>.current.value
+
+        https://medium.com/@shriharim006/react-how-to-stop-re-rendering-in-react-components-bab286f13d33#fb48
+    */
+    const Nr_laboranta = useRef(null);
+    const Ilosc = useRef(null);
+    const Miejsce = useRef(null);
+    const Nazwa_sprzetu = useRef(null);
+    const Nr_inwentarzowy = useRef(null);
+    const Uzytkownik_sprzetu = useRef(null);
+    const Rodzaj_sprzetu = useRef(null);
+    const Typ_sprzetu = useRef(null);
+    const Do_wybrakowania = useRef(null);
+    const test = useRef(null);
+    
+    const GetLabsNrs = () => {
         return (
             <>
-                <select className="addElementTable" value={Nr_laboranta} name="labNr" onChange={(e) => { 
-                    setNr_laboranta(e.target.value);
-                }}>
+                <select className="addElementTable" name="labNr" ref={Nr_laboranta} >
                     { GetData().map((val) => (
-                        <option key={val.id} value={val.Nr_laboranta}> 
+                        <option key={val.id} value={val.Nr_laboranta} > 
                             {val.Nr_laboranta} 
                         </option>  
                     ))}
@@ -69,15 +71,9 @@ const TableUI = () => {
     }
 
     const GetPlaces = () => {
-        useEffect(() => {
-            console.log(Miejsce);
-        }, [Miejsce]);
-
         return (
             <>
-                <select className="addElementTable" value={Miejsce} name="place" onChange={(e) => { 
-                    setMiejsce(e.target.value);
-                }}>
+                <select className="addElementTable" name="place" ref={Miejsce} >
                     { GetData().map((val) => (
                         <option key={val.id} value={val.Miejsce}> 
                             {val.Miejsce} 
@@ -89,15 +85,9 @@ const TableUI = () => {
     }
 
     const GetUsers = () => {
-        useEffect(() => {
-            console.log(Uzytkownik_sprzetu);
-        }, [Uzytkownik_sprzetu]);
-
         return (
             <>
-                <select className="addElementTable" value={Uzytkownik_sprzetu} name="user" onChange={(e) => { 
-                    setUzytkownik_sprzetu(e.target.value);
-                }}>
+                <select className="addElementTable" name="user" ref={Uzytkownik_sprzetu} >
                     { GetData().map((val) => (
                         <option key={val.id} value={val.Uzytkownik_sprzetu}> 
                             {val.Uzytkownik_sprzetu} 
@@ -115,7 +105,7 @@ const TableUI = () => {
             </th>
             <th>
                 <div className="inp-box">
-                    <input className="inp-effect" type="text" placeholder="Ilość..." onChange={(e) => { setIlosc(e.target.value); }}/>
+                    <input className="inp-effect" type="text" placeholder="Ilość..." ref={Ilosc} />
                     <span className="focus-border">
                         <i></i>
                     </span>
@@ -126,7 +116,7 @@ const TableUI = () => {
             </th>
             <th>
                 <div className="inp-box">
-                    <input className="inp-effect" type="text" placeholder="Nazwa sprzętu..." onChange={(e) => { setNazwa_sprzetu(e.target.value); }} />
+                    <input className="inp-effect" type="text" placeholder="Nazwa sprzętu..." ref={Nazwa_sprzetu} />
                     <span className="focus-border">
                         <i></i>
                     </span>
@@ -134,7 +124,7 @@ const TableUI = () => {
             </th>
             <th>
                 <div className="inp-box">
-                    <input className="inp-effect" type="number" placeholder="Numer inwentarzowy..." onChange={(e) => { setNr_inwentarzowy(e.target.value); }} />
+                    <input className="inp-effect" type="number" min={1} placeholder="Numer inwentarzowy..." ref={Nr_inwentarzowy} />
                     <span className="focus-border">
                         <i></i>
                     </span>
@@ -144,19 +134,19 @@ const TableUI = () => {
                 <GetUsers />
             </th>
             <th>
-                <select className="addElementTable" name="rodzajsprzetu" onChange={(e) => { setRodzaj_sprzetu(e.target.value); }}>
+                <select className="addElementTable" name="rodzajsprzetu" ref={Rodzaj_sprzetu} >
                     <option value="elektronika">Elektronika</option>
                     <option value="mebel">Mebel</option>
                 </select>
             </th>
             <th>
-                <select className="addElementTable" name="typsprzetu" onChange={(e) => { setTyp_sprzetu(e.target.value); }}>
-                    <option value="Bezstanowy">Stanowy</option>
+                <select className="addElementTable" name="typsprzetu" ref={Typ_sprzetu} >
+                    <option value="Stanowy">Stanowy</option>
                     <option value="Bezstanowy">Bezstanowy</option>
                 </select>
             </th>
             <th>
-                <select className="addElementTable" name="dowybrakowania" onChange={(e) => { setDo_wybrakowania(e.target.value); }}>
+                <select className="addElementTable" name="dowybrakowania" ref={Do_wybrakowania} >
                     <option value="Tak">Tak</option>
                     <option value="Nie">Nie</option>
                 </select>
@@ -193,13 +183,16 @@ const TableUI = () => {
         </tr>
     );
 
-    const [isClicked, setIsClicked] = useState(false)
+    const [isClicked, setIsClicked] = useState(false);
+
     const buttonHandler = () => {
-        setIsClicked(current => !current)
+        setIsClicked(current => !current);
     }
+
     useEffect(() => {
         console.log(isClicked);
     }, [isClicked]);
+
     return (
         <>
             <div>
@@ -218,14 +211,13 @@ const TableUI = () => {
             </div>
 
             <div className={(isClicked ? "sidebarActive":"") + " sidebar"} >
-                    <button onClick={buttonHandler} >
-                        <i className="fa-solid fa-bars"></i>
-                    </button>
-                    <button  className={isClicked ? "navElementOpen" : "navElementClosed"}>Dodaj</button>
-                    <h3 className={isClicked ? "navElementOpen" : "navElementClosed"}>Filtr</h3>
-                    <input className={isClicked ? "navElementOpen" : "navElementClosed"} id="Search" type="text" value={SearchValue} onChange={(e) => {setSearchValue(e.target.value); showDataSearch(SearchValue)}}></input>
-                    <a className={isClicked ? "navElementOpen" : "navElementClosed"} href="#">Link 3</a>
-                
+                <button onClick={buttonHandler} >
+                    <i className="fa-solid fa-bars"></i>
+                </button>
+                <button className={isClicked ? "navElementOpen" : "navElementClosed"}>Dodaj</button>
+                <h3 className={isClicked ? "navElementOpen" : "navElementClosed"}>Filtr</h3>
+                <input className={isClicked ? "navElementOpen" : "navElementClosed"} id="Search" type="text" value={SearchValue} onChange={(e) => {setSearchValue(e.target.value); showDataSearch(SearchValue)}}></input>
+                <a className={isClicked ? "navElementOpen" : "navElementClosed"} href="#">Link 3</a>
             </div>
         </>
     );
