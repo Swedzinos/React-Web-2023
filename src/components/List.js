@@ -124,7 +124,7 @@ const TableUI = () => {
             </th>
             <th>
                 <div className="inp-box">
-                    <input className="inp-effect" type="number" min={1} placeholder="Numer inwentarzowy..." ref={Nr_inwentarzowy} />
+                    <input className="inp-effect" type="number" min="1" placeholder="Nr inwentarzowy..." ref={Nr_inwentarzowy} />
                     <span className="focus-border">
                         <i></i>
                     </span>
