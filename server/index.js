@@ -17,16 +17,6 @@ app.get("/api/get", (req, res) => {
   });
 });
 
-// Route to get one thing aka search by id
-app.get("/api/get/id=:id", (req, res) => {
-  const id = req.params.id;
-  db.query("SELECT * FROM inwentarz WHERE Nr_laboranta LIKE %id% OR Ilość LIKE %id% OR Miejsce LIKE %id% OR Nazwa_sprzętu LIKE %id% OR Nr_inwentarzowy LIKE %id% OR Uzytkownik_sprzetu LIKE %id% OR Rodzaj_sprzętu LIKE %id% OR Typ_sprzętu LIKE %id% OR Do_wybrakowania LIKE %id%", id, (err, result) => {
-    if (err) {
-      console.log(err);
-    }
-    res.send(result);
-  });
-});
 
 // Route for creating the thing in progress
 app.post("/api/create", (req, res) => {

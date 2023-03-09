@@ -174,17 +174,20 @@ const TableUI = () => {
         window.location.reload(false);
         console.log("Wysłano");
         };
+    const SortingItems = value =>{
+        console.log(value);
+    }
     const header = (
         <tr>
-            <th>Nr laboranta</th>
-            <th>Ilość</th>
-            <th>Miejsce</th>
-            <th>Nazwa sprzętu</th>
-            <th>Nr inw.</th>
-            <th>Użytkownik</th>
-            <th>Rodzaj sprzętu</th>
-            <th>Typ sprzętu</th>
-            <th>Do wybrakowania</th>
+            <button  onClick={SortingItems("Nr_laboranta")}><th>Nr laboranta</th></button>
+            <th onClick={SortingItems("Ilość")}>Ilość</th>
+            <th onClick={SortingItems("Miejsce")}>Miejsce</th>
+            <th onClick={SortingItems("Nazwa_sprzętu")}>Nazwa sprzętu</th>
+            <th onClick={SortingItems("Nr_inwentarzowy")}>Nr inw.</th>
+            <th onClick={SortingItems("Uzytkownik_sprzetu")}>Użytkownik</th>
+            <th onClick={SortingItems("Rodzaj_sprzętu")}>Rodzaj sprzętu</th>
+            <th onClick={SortingItems("Typ_sprzętu")}>Typ sprzętu</th>
+            <th onClick={SortingItems("Do_wybrakowania")}>Do wybrakowania</th>
         </tr>
     );
 
