@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Axios from "axios";
 import GetData from "./GetData.js";
-import SearchData from "./SearchData.js"
 import "../css/Sidebar.css";
 import "../css/List.css";
 
@@ -20,8 +19,15 @@ const TableUI = () => {
             <td>{val.Do_wybrakowania}</td>
         </tr>  
     ));
-    const showDataSearch = (id) =>{
-        const showSearchData = SearchData(id).map((val) => (
+    
+    const [SearchValue, setSearchValue] = useState("");  
+    const filteredData = GetData().filter((val) => {
+        return Object.values(val).join('').toLowerCase().includes(SearchValue.toLowerCase())
+    })
+
+    const showDataSearch = (SearchValue) =>{
+        
+        const showSearchData = filteredData.map((val) => (
             <tr key={val.id}>
                 <td>{val.Nr_laboranta}</td>
                 <td>{val.Ilość}</td>
@@ -36,8 +42,7 @@ const TableUI = () => {
         ));
         return showSearchData;
     }
-        
-    const [SearchValue, setSearchValue] = useState("");    
+      
 
     /*  Aby uzyskac dostep do wartosci z zmiennych uzywajacych useRef (te poniezej):
 
@@ -202,11 +207,11 @@ const TableUI = () => {
                         {tableData}
                     </thead>
                     
-                    {SearchValue == "undefined" || SearchValue == ""  ? <tbody>{showData}</tbody>:<tbody></tbody>}
+                    {SearchValue == "undefined" || SearchValue == ""  ? <tbody>{showData}</tbody>:<tbody>{showDataSearch(SearchValue)}</tbody>}
                     
                     <tfoot>
 
-                    </tfoot>
+                    </tfoot> 
                 </table>
             </div>
 
@@ -216,7 +221,7 @@ const TableUI = () => {
                 </button>
                 <button className={isClicked ? "navElementOpen" : "navElementClosed"}>Dodaj</button>
                 <h3 className={isClicked ? "navElementOpen" : "navElementClosed"}>Filtr</h3>
-                <input className={isClicked ? "navElementOpen" : "navElementClosed"} id="Search" type="text" value={SearchValue} onChange={(e) => {setSearchValue(e.target.value); showDataSearch(SearchValue)}}></input>
+                <input className={isClicked ? "navElementOpen" : "navElementClosed"} id="Search" type="text" value={SearchValue} onChange={(e) => {setSearchValue(e.target.value)}}></input>
                 <a className={isClicked ? "navElementOpen" : "navElementClosed"} href="#">Link 3</a>
             </div>
         </>
