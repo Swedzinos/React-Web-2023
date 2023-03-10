@@ -8,13 +8,8 @@ app.use(cors());
 app.use(express.json());
 
 // Route to get all things
-app.get("/api/get", (req, res) => {
-    const selectQuery = "SELECT `il`.`id`, `l`.`id` AS `lab_id`, CONCAT(`u`.`firstname`, ' ', `u`.`surname`) AS `user_name`, `p`.`name` AS `place`, `c`.`category_name` AS `category`, `il`.`amount`, `il`.`name`, `il`.`inventory_number`, `il`.`state`, `il`.`damaged` " +
-        "FROM `inventory_list` `il` " +
-            "INNER JOIN `labs` AS `l` ON `l`.id = `il`.`lab_id` " +
-            "INNER JOIN `users` AS `u` ON `u`.`id` = `il`.`user_id` " +
-            "INNER JOIN `places` AS `p` ON `p`.`id` = `il`.`place_id` " +
-            "INNER JOIN `categories` AS `c` ON `c`.`id` = `il`.`category_id`; ";
+app.get("/api/get/", (req, res) => {
+    const selectQuery = "SELECT * FROM inventory_list";
     db.query(selectQuery, (err, result) => {
         if (err) {
             console.log(err);
@@ -23,8 +18,8 @@ app.get("/api/get", (req, res) => {
     });
 });
 
-app.get("/api/get/users/:name", (req, res) => {
-    const selectQuery = "SELECT `id` FROM `users` WHERE CONCAT(`firstname`, ' ', `surname`) = '"+req.params.name+" '";
+app.get("/api/get/users", (req, res) => {
+    const selectQuery = "SELECT `username` FROM `users`";
     db.query(selectQuery, (err, result) => {
         if (err) {
             console.log(err);
@@ -32,9 +27,8 @@ app.get("/api/get/users/:name", (req, res) => {
         res.send(result);
     });
 });
-
-app.get("/api/get/categories/:name", (req, res) => {
-    const selectQuery = "SELECT `id` FROM `categories` WHERE `category_name` = '"+req.params.name+"';";
+app.get("/api/get/labs", (req, res) => {
+    const selectQuery = "SELECT `id` FROM `labs`";
     db.query(selectQuery, (err, result) => {
         if (err) {
             console.log(err);
@@ -42,9 +36,8 @@ app.get("/api/get/categories/:name", (req, res) => {
         res.send(result);
     });
 });
-
-app.get("/api/get/places/:name", (req, res) => {
-    const selectQuery = "SELECT `id` FROM `places` WHERE `name` = '"+req.params.name+"';";
+app.get("/api/get/places", (req, res) => {
+    const selectQuery = "SELECT `name` FROM `places`";
     db.query(selectQuery, (err, result) => {
         if (err) {
             console.log(err);
@@ -66,7 +59,7 @@ app.post("/api/create", (req, res) => {
     const state_type = req.body.state_type;
     const damaged = req.body.damaged;
 
-    db.query("INSERT INTO `inventory_list`(`lab_id`, `user_id`, `place_id`, `category_id`, `amount`, `name`, `inventory_number`, `state`, `damaged`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
+    db.query("INSERT INTO `inventory_list`(`lab_id`, `user_name`, `place`, `category`, `amount`, `name`, `inventory_number`, `state`, `damaged`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
         [lab_id, user_id, place_id, category_id, amount, name, inventory_number, state_type, damaged],
         (err, result) => {
             if (err) {

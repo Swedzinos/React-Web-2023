@@ -62,35 +62,35 @@ const TableUI = () => {
     
     const SelectData = (props) => {
         const data = [];
+        const url = props.url;
         const dataName = props.dataToShow;
-
-        GetData().map((val) => {
-            if(!data.includes(val[dataName])) {
-                data.push(val[dataName]);
-            }
-        });
-
-        return (
-            <>
-            {/* To get value from ref:
+        {/* To get value from ref:
             
-                props.innerRef.current.value
-            */}
-                <select className="addElementTable" name={dataName} ref={props.innerRef} > 
-                    { data.map((val, idx) => (
+            props.innerRef.current.value
+        */}
+        GetData(url).map((val, idx) => (
+            data.push(val[dataName])
+        ))
+        return(
+            <>
+                <select className="addElementTable" url={props.url} name={dataName} ref={props.innerRef}>
+                { data.map((val, idx) => (
                         <option key={idx} value={val} > 
                             {val} 
                         </option>  
-                    ))}
-                </select>
+                ))}
+                </select>  
             </>
         );
+        
+                
+         
     }
 
     const tableData = (
         <tr>
             <th>
-                <SelectData dataToShow="lab_id" innerRef={lab_id} />
+                <SelectData url="labs" dataToShow="id" innerRef={lab_id} />
             </th>
             <th>
                 <div className="inp-box">
@@ -101,7 +101,7 @@ const TableUI = () => {
                 </div>
             </th>
             <th>
-                <SelectData dataToShow="place" innerRef={place} />
+                <SelectData url="places" dataToShow="name" innerRef={place} />
             </th>
             <th>
                 <div className="inp-box">
@@ -120,7 +120,7 @@ const TableUI = () => {
                 </div>
             </th>
             <th>
-                <SelectData dataToShow="user_name" innerRef={user_name} />
+                <SelectData url="users" dataToShow="username" innerRef={user_name} />
             </th>
             <th>
                 <select className="addElementTable" name="rodzajsprzetu" ref={category} >
@@ -147,37 +147,22 @@ const TableUI = () => {
     const submitPost = async (e) => {
         e.preventDefault();
 
-
-        // tu jest problem
-
-        // await GetData(`places/${place.current.value}`).map(val => {
-        //     console.log(val);
-        // });
-
-        // const place_id = await GetData(`places/${place.current.value}`)[0]["id"];
-        // const user_id = await GetData(`users/${user_name.current.value}`)[0]["id"];
-        // const category_id = await GetData(`categories/${category.current.value}`)[0]["id"];
-        
-        // const place_id = 3;
-        // const user_id = 2;
-        // const category_id = 2;
-
-        // await Axios.post("http://localhost:3002/api/create", {
-        //     lab_id: lab_id.current.value,
-        //     amount: amount.current.value,
-        //     place_id: place_id, //todo
-        //     name: name.current.value,
-        //     inventory_number: inventory_number.current.value,
-        //     user_id: user_id, //todo
-        //     category_id: category_id, //todo
-        //     state_type: state_type.current.value,
-        //     damaged: damaged.current.value,
-        // }).then(res => {
-        //     console.log(res.status);
-        //     console.log(res.data);
-        // }).catch(err => {
-        //     console.log(err);
-        // });
+        await Axios.post("http://localhost:3002/api/create", {
+            lab_id: lab_id.current.value,
+            amount: amount.current.value,
+            place_id: place.current.value, //todo
+            name: name.current.value,
+            inventory_number: inventory_number.current.value,
+            user_id: user_name.current.value, //todo
+            category_id: category.current.value, //todo
+            state_type: state_type.current.value,
+            damaged: damaged.current.value,
+        }).then(res => {
+            console.log(res.status);
+            console.log(res.data);
+        }).catch(err => {
+            console.log(err);
+        });
 
         window.location.reload(false);
         console.log("Wysłano");

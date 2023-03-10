@@ -1,15 +1,22 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.3
+-- version 5.0.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 10 Mar 2023, 15:39
--- Wersja serwera: 10.4.24-MariaDB
--- Wersja PHP: 8.1.4
+-- Czas generowania: 10 Mar 2023, 19:41
+-- Wersja serwera: 10.4.11-MariaDB
+-- Wersja PHP: 7.2.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Baza danych: `inventory`
@@ -31,8 +38,8 @@ CREATE TABLE `categories` (
 --
 
 INSERT INTO `categories` (`id`, `category_name`) VALUES
-(1, 'elektronika'),
-(2, 'meble');
+(3, 'Elektronika'),
+(4, 'Mebel');
 
 -- --------------------------------------------------------
 
@@ -43,12 +50,12 @@ INSERT INTO `categories` (`id`, `category_name`) VALUES
 CREATE TABLE `inventory_list` (
   `id` int(11) NOT NULL,
   `lab_id` int(11) DEFAULT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `place_id` int(11) DEFAULT NULL,
-  `category_id` int(11) DEFAULT NULL,
   `amount` int(11) NOT NULL,
-  `name` varchar(150) NOT NULL,
+  `place` varchar(100) DEFAULT NULL,
+  `name` varchar(80) NOT NULL,
   `inventory_number` varchar(40) NOT NULL,
+  `user_name` varchar(150) DEFAULT NULL,
+  `category` varchar(60) DEFAULT NULL,
   `state` enum('Stanowy','Bezstanowy') NOT NULL,
   `damaged` enum('Tak','Nie') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -57,11 +64,10 @@ CREATE TABLE `inventory_list` (
 -- Zrzut danych tabeli `inventory_list`
 --
 
-INSERT INTO `inventory_list` (`id`, `lab_id`, `user_id`, `place_id`, `category_id`, `amount`, `name`, `inventory_number`, `state`, `damaged`) VALUES
-(9, 1, 1, 3, 1, 1, 'Kabel HDMI', 'H3M1', 'Stanowy', 'Nie'),
-(10, 1, 3, 4, 2, 2, 'Krzesło biurowe', 'KR3B18', 'Stanowy', 'Tak'),
-(11, 2, 2, NULL, 1, 2, 'Przedłużacz 3 gniazdkowy', 'PR333GN1', 'Stanowy', 'Tak'),
-(12, 2, 4, 4, 1, 1, 'Biurko', 'B1URK0', 'Stanowy', 'Nie');
+INSERT INTO `inventory_list` (`id`, `lab_id`, `amount`, `place`, `name`, `inventory_number`, `user_name`, `category`, `state`, `damaged`) VALUES
+(1, 3, 1, 'Parking', 'Kabel HDMI', '25452515', 'Kamil Bank', 'Elektronika', 'Stanowy', 'Nie'),
+(16, 4, 1, 'Piwnica', 'Monitor Acer', '1236665', 'Raul Wierzbiński', 'elektronika', 'Stanowy', 'Nie'),
+(17, 4, 10, 'Piwnica', 'Stół', '21222545', 'Kamil Bank', 'mebel', 'Bezstanowy', 'Tak');
 
 -- --------------------------------------------------------
 
@@ -71,17 +77,16 @@ INSERT INTO `inventory_list` (`id`, `lab_id`, `user_id`, `place_id`, `category_i
 
 CREATE TABLE `labs` (
   `id` int(11) NOT NULL,
-  `firstname` varchar(80) NOT NULL,
-  `surname` varchar(80) NOT NULL
+  `username` varchar(80) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Zrzut danych tabeli `labs`
 --
 
-INSERT INTO `labs` (`id`, `firstname`, `surname`) VALUES
-(1, 'Raul', 'Wierzbiński'),
-(2, 'Kamil', 'Bank');
+INSERT INTO `labs` (`id`, `username`) VALUES
+(3, 'Kamil Bank'),
+(4, 'Raul Wierzbiński');
 
 -- --------------------------------------------------------
 
@@ -99,8 +104,8 @@ CREATE TABLE `places` (
 --
 
 INSERT INTO `places` (`id`, `name`) VALUES
-(3, 'parking'),
-(4, 'sala 24');
+(2, 'Parking'),
+(1, 'Piwnica');
 
 -- --------------------------------------------------------
 
@@ -110,19 +115,16 @@ INSERT INTO `places` (`id`, `name`) VALUES
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
-  `firstname` varchar(80) NOT NULL,
-  `surname` varchar(80) NOT NULL
+  `username` varchar(150) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Zrzut danych tabeli `users`
 --
 
-INSERT INTO `users` (`id`, `firstname`, `surname`) VALUES
-(1, 'Sebastian', 'Kowalski'),
-(2, 'Andrzej', 'Nowak'),
-(3, 'Janusz', 'Rybak'),
-(4, 'Stanisław', 'Kamiński');
+INSERT INTO `users` (`id`, `username`) VALUES
+(1, 'Kamil Bank'),
+(2, 'Raul Wierzbiński');
 
 --
 -- Indeksy dla zrzutów tabel
@@ -141,9 +143,9 @@ ALTER TABLE `categories`
 ALTER TABLE `inventory_list`
   ADD PRIMARY KEY (`id`),
   ADD KEY `inventory_list_ibfk_1` (`lab_id`),
-  ADD KEY `inventory_list_ibfk_2` (`user_id`),
-  ADD KEY `inventory_list_ibfk_3` (`place_id`),
-  ADD KEY `inventory_list_ibfk_4` (`category_id`);
+  ADD KEY `inventory_list_ibfk_3` (`place`),
+  ADD KEY `inventory_list_ibfk_4` (`category`),
+  ADD KEY `inventory_list_ibfk_2` (`user_name`) USING BTREE;
 
 --
 -- Indeksy dla tabeli `labs`
@@ -162,29 +164,30 @@ ALTER TABLE `places`
 -- Indeksy dla tabeli `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`);
 
 --
--- AUTO_INCREMENT dla zrzuconych tabel
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
 -- AUTO_INCREMENT dla tabeli `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT dla tabeli `inventory_list`
 --
 ALTER TABLE `inventory_list`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT dla tabeli `labs`
 --
 ALTER TABLE `labs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT dla tabeli `places`
@@ -206,7 +209,12 @@ ALTER TABLE `users`
 -- Ograniczenia dla tabeli `inventory_list`
 --
 ALTER TABLE `inventory_list`
-  ADD CONSTRAINT `inventory_list_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `inventory_list_ibfk_3` FOREIGN KEY (`place_id`) REFERENCES `places` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `inventory_list_ibfk_4` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `inventory_list_ibfk_3` FOREIGN KEY (`place`) REFERENCES `places` (`name`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `inventory_list_ibfk_4` FOREIGN KEY (`category`) REFERENCES `categories` (`category_name`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `inventory_list_ibfk_5` FOREIGN KEY (`user_name`) REFERENCES `users` (`username`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `inventory_list_ibfk_6` FOREIGN KEY (`lab_id`) REFERENCES `labs` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
