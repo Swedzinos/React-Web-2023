@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 
-const GetData = () => {
+const GetData = (endpoint="") => {
     const [postList, setPostList] = useState([]);
+    let url = `http://localhost:3002/api/get/`
+
+    if(endpoint != "") {
+        url += `${endpoint}`;
+    }
 
     useEffect(() => {
-        Axios.get(`http://localhost:3002/api/get`).then((data) => {
+        Axios.get(url).then((data) => {
             setPostList(data.data);
         });
     }, []);

@@ -8,15 +8,15 @@ const TableUI = () => {
     
     const showData = GetData().map((val) => (
         <tr key={val.id}>
-            <td>{val.Nr_laboranta}</td>
-            <td>{val.Ilość}</td>
-            <td>{val.Miejsce}</td>
-            <td>{val.Nazwa_sprzętu}</td>
-            <td>{val.Nr_inwentarzowy}</td>
-            <td>{val.Uzytkownik_sprzetu}</td>
-            <td>{val.Rodzaj_sprzętu}</td>
-            <td>{val.Typ_sprzętu}</td>
-            <td>{val.Do_wybrakowania}</td>
+            <td>{val.lab_id}</td>
+            <td>{val.amount}</td>
+            <td>{val.place}</td>
+            <td>{val.name}</td>
+            <td>{val.inventory_number}</td>
+            <td>{val.user_name}</td>
+            <td>{val.category}</td>
+            <td>{val.state}</td>
+            <td>{val.damaged}</td>
         </tr>  
     ));
     
@@ -29,16 +29,16 @@ const TableUI = () => {
         
         const showSearchData = filteredData.map((val) => (
             <tr key={val.id}>
-                <td>{val.Nr_laboranta}</td>
-                <td>{val.Ilość}</td>
-                <td>{val.Miejsce}</td>
-                <td>{val.Nazwa_sprzętu}</td>
-                <td>{val.Nr_inwentarzowy}</td>
-                <td>{val.Uzytkownik_sprzetu}</td>
-                <td>{val.Rodzaj_sprzętu}</td>
-                <td>{val.Typ_sprzętu}</td>
-                <td>{val.Do_wybrakowania}</td>
-            </tr>
+                <td>{val.lab_id}</td>
+                <td>{val.amount}</td>
+                <td>{val.place}</td>
+                <td>{val.name}</td>
+                <td>{val.inventory_number}</td>
+                <td>{val.user_name}</td>
+                <td>{val.category}</td>
+                <td>{val.state}</td>
+                <td>{val.damaged}</td>
+            </tr>  
         ));
         return showSearchData;
     }
@@ -50,52 +50,36 @@ const TableUI = () => {
 
         https://medium.com/@shriharim006/react-how-to-stop-re-rendering-in-react-components-bab286f13d33#fb48
     */
-    const Nr_laboranta = useRef(null);
-    const Ilosc = useRef(null);
-    const Miejsce = useRef(null);
-    const Nazwa_sprzetu = useRef(null);
-    const Nr_inwentarzowy = useRef(null);
-    const Uzytkownik_sprzetu = useRef(null);
-    const Rodzaj_sprzetu = useRef(null);
-    const Typ_sprzetu = useRef(null);
-    const Do_wybrakowania = useRef(null);
-    const test = useRef(null);
+    const lab_id = useRef(null);
+    const amount = useRef(null);
+    const place = useRef(null);
+    const name = useRef(null);
+    const inventory_number = useRef(null);
+    const user_name = useRef(null);
+    const category = useRef(null);
+    const state_type = useRef(null);
+    const damaged = useRef(null);
     
-    const GetLabsNrs = () => {
-        return (
-            <>
-                <select className="addElementTable" name="labNr" ref={Nr_laboranta} >
-                    { GetData().map((val) => (
-                        <option key={val.id} value={val.Nr_laboranta} > 
-                            {val.Nr_laboranta} 
-                        </option>  
-                    ))}
-                </select>
-            </>
-        );
-    }
+    const SelectData = (props) => {
+        const data = [];
+        const dataName = props.dataToShow;
 
-    const GetPlaces = () => {
-        return (
-            <>
-                <select className="addElementTable" name="place" ref={Miejsce} >
-                    { GetData().map((val) => (
-                        <option key={val.id} value={val.Miejsce}> 
-                            {val.Miejsce} 
-                        </option>  
-                    ))}
-                </select>
-            </>
-        );
-    }
+        GetData().map((val) => {
+            if(!data.includes(val[dataName])) {
+                data.push(val[dataName]);
+            }
+        });
 
-    const GetUsers = () => {
         return (
             <>
-                <select className="addElementTable" name="user" ref={Uzytkownik_sprzetu} >
-                    { GetData().map((val) => (
-                        <option key={val.id} value={val.Uzytkownik_sprzetu}> 
-                            {val.Uzytkownik_sprzetu} 
+            {/* To get value from ref:
+            
+                props.innerRef.current.value
+            */}
+                <select className="addElementTable" name={dataName} ref={props.innerRef} > 
+                    { data.map((val, idx) => (
+                        <option key={idx} value={val} > 
+                            {val} 
                         </option>  
                     ))}
                 </select>
@@ -106,22 +90,22 @@ const TableUI = () => {
     const tableData = (
         <tr>
             <th>
-                <GetLabsNrs />
+                <SelectData dataToShow="lab_id" innerRef={lab_id} />
             </th>
             <th>
                 <div className="inp-box">
-                    <input className="inp-effect" type="text" placeholder="Ilość..." ref={Ilosc} />
+                    <input className="inp-effect" type="text" placeholder="Ilość..." ref={amount} />
                     <span className="focus-border">
                         <i></i>
                     </span>
                 </div>
             </th>
             <th>
-                <GetPlaces />
+                <SelectData dataToShow="place" innerRef={place} />
             </th>
             <th>
                 <div className="inp-box">
-                    <input className="inp-effect" type="text" placeholder="Nazwa sprzętu..." ref={Nazwa_sprzetu} />
+                    <input className="inp-effect" type="text" placeholder="Nazwa sprzętu..." ref={name} />
                     <span className="focus-border">
                         <i></i>
                     </span>
@@ -129,29 +113,29 @@ const TableUI = () => {
             </th>
             <th>
                 <div className="inp-box">
-                    <input className="inp-effect" type="number" min="1" placeholder="Nr inwentarzowy..." ref={Nr_inwentarzowy} />
+                    <input className="inp-effect" type="text" placeholder="Nr inwentarzowy..." ref={inventory_number} />
                     <span className="focus-border">
                         <i></i>
                     </span>
                 </div>
             </th>
             <th>
-                <GetUsers />
+                <SelectData dataToShow="user_name" innerRef={user_name} />
             </th>
             <th>
-                <select className="addElementTable" name="rodzajsprzetu" ref={Rodzaj_sprzetu} >
+                <select className="addElementTable" name="rodzajsprzetu" ref={category} >
                     <option value="elektronika">Elektronika</option>
                     <option value="mebel">Mebel</option>
                 </select>
             </th>
             <th>
-                <select className="addElementTable" name="typsprzetu" ref={Typ_sprzetu} >
+                <select className="addElementTable" name="typsprzetu" ref={state_type} >
                     <option value="Stanowy">Stanowy</option>
                     <option value="Bezstanowy">Bezstanowy</option>
                 </select>
             </th>
             <th>
-                <select className="addElementTable" name="dowybrakowania" ref={Do_wybrakowania} >
+                <select className="addElementTable" name="dowybrakowania" ref={damaged} >
                     <option value="Tak">Tak</option>
                     <option value="Nie">Nie</option>
                 </select>
@@ -159,35 +143,61 @@ const TableUI = () => {
         </tr>
     );
 
-    const SubmitPost = () => {
-        Axios.post("http://localhost:3002/api/create", {
-            Nr_laboranta: Nr_laboranta,
-            Ilosc: Ilosc,
-            Miejsce: Miejsce,
-            Nazwa_sprzetu: Nazwa_sprzetu,
-            Nr_inwentarzowy: Nr_inwentarzowy,
-            Uzytkownik_sprzetu: Uzytkownik_sprzetu,
-            Rodzaj_sprzetu: Rodzaj_sprzetu,
-            Typ_sprzetu: Typ_sprzetu,
-            Do_wybrakowania: Do_wybrakowania,
-        });
+    
+    const submitPost = async (e) => {
+        e.preventDefault();
+
+
+        // tu jest problem
+
+        // await GetData(`places/${place.current.value}`).map(val => {
+        //     console.log(val);
+        // });
+
+        // const place_id = await GetData(`places/${place.current.value}`)[0]["id"];
+        // const user_id = await GetData(`users/${user_name.current.value}`)[0]["id"];
+        // const category_id = await GetData(`categories/${category.current.value}`)[0]["id"];
+        
+        // const place_id = 3;
+        // const user_id = 2;
+        // const category_id = 2;
+
+        // await Axios.post("http://localhost:3002/api/create", {
+        //     lab_id: lab_id.current.value,
+        //     amount: amount.current.value,
+        //     place_id: place_id, //todo
+        //     name: name.current.value,
+        //     inventory_number: inventory_number.current.value,
+        //     user_id: user_id, //todo
+        //     category_id: category_id, //todo
+        //     state_type: state_type.current.value,
+        //     damaged: damaged.current.value,
+        // }).then(res => {
+        //     console.log(res.status);
+        //     console.log(res.data);
+        // }).catch(err => {
+        //     console.log(err);
+        // });
+
         window.location.reload(false);
         console.log("Wysłano");
-        };
+    };
+
     const SortingItems = value =>{
         console.log(value);
     }
+
     const header = (
         <tr>
-            <button  onClick={SortingItems("Nr_laboranta")}><th>Nr laboranta</th></button>
-            <th onClick={SortingItems("Ilość")}>Ilość</th>
-            <th onClick={SortingItems("Miejsce")}>Miejsce</th>
-            <th onClick={SortingItems("Nazwa_sprzętu")}>Nazwa sprzętu</th>
-            <th onClick={SortingItems("Nr_inwentarzowy")}>Nr inw.</th>
-            <th onClick={SortingItems("Uzytkownik_sprzetu")}>Użytkownik</th>
-            <th onClick={SortingItems("Rodzaj_sprzętu")}>Rodzaj sprzętu</th>
-            <th onClick={SortingItems("Typ_sprzętu")}>Typ sprzętu</th>
-            <th onClick={SortingItems("Do_wybrakowania")}>Do wybrakowania</th>
+            <button  onClick={SortingItems("lab_id")}><th>Nr laboranta</th></button>
+            <th onClick={SortingItems("amount")}>Ilość</th>
+            <th onClick={SortingItems("place")}>place</th>
+            <th onClick={SortingItems("name")}>Nazwa sprzętu</th>
+            <th onClick={SortingItems("inventory_number")}>Nr inw.</th>
+            <th onClick={SortingItems("user_name")}>Użytkownik</th>
+            <th onClick={SortingItems("category")}>Rodzaj sprzętu</th>
+            <th onClick={SortingItems("state_type")}>Typ sprzętu</th>
+            <th onClick={SortingItems("damaged")}>Do wybrakowania</th>
         </tr>
     );
 
@@ -222,7 +232,7 @@ const TableUI = () => {
                 <button onClick={buttonHandler} >
                     <i className="fa-solid fa-bars"></i>
                 </button>
-                <button className={isClicked ? "navElementOpen" : "navElementClosed"}>Dodaj</button>
+                <button className={isClicked ? "navElementOpen" : "navElementClosed"} onClick={submitPost}>Dodaj</button>
                 <h3 className={isClicked ? "navElementOpen" : "navElementClosed"}>Filtr</h3>
                 <input className={isClicked ? "navElementOpen" : "navElementClosed"} id="Search" type="text" value={SearchValue} onChange={(e) => {setSearchValue(e.target.value)}}></input>
                 <a className={isClicked ? "navElementOpen" : "navElementClosed"} href="#">Link 3</a>
