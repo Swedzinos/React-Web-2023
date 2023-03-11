@@ -1,47 +1,166 @@
 @import url("./inputs.css");
 
-.inventory_table {
-    width: 95%;
-    position: absolute;
-    right: 5%;
-    overflow: auto;
-    background-color: rgba(255, 255, 255, 0.5);
-    border-collapse: collapse;
-    transition-duration: 0.5s;
+/* Scrollbar */
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px var(--primary);
+    border-radius: 12px;
+    background-color: var(--light);
 }
-.inventory_table th, td {
 
+::-webkit-scrollbar {
+    width: 10px;
+    background-color: var(--light);
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 12px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    background-color: var(--primary);
+}
+
+nav {
+    width: 100%;
+    height: var(--nav-height);
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 2.5rem;
+    align-items: center;
+    background-color: var(--primary);
+}
+
+nav .brand {
+    display: flex;
+    align-items: center;
+    height: var(--nav-height);
+    padding: 0.75rem;
+}
+
+.brand-logo {
+    height: 100%;
+}
+
+.brand-logo img {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+.brand-name {
+    color: #ccc;
+    margin: 0 1.5rem;
+}
+
+.sidebar-trigger {
+    margin: .5em;
+}
+
+.sidebar-trigger button {
+    color: #ccc;
+    background-color: transparent;
+    font-size: 1.2em;
+    padding: 0.2em 0.4em;
+    border: 2px solid currentColor;
+    outline: none;
+}
+
+section {
+    display: flex;
+}
+
+.table-wrapper {
+    width: 100%;
+}
+
+.table-wrapper .fl-table.clicked {
+    width: 100%;
+}
+
+.fl-table {
+    width: 100%;
+    border-collapse: collapse;
+    white-space: nowrap;
+    background-color: white;
+    transition: .5s;
+}
+
+.fl-table td, .fl-table th {
     text-align: center;
     padding: 8px;
-    border: 2px solid;
 }
 
-input {
-    border-collapse: collapse;
-    width: 75%;
-    background-color: rgba(255, 255, 255, 0.5);
-    overflow: auto;
+.fl-table td {
+    border-right: 1px solid var(--light);
+    font-size: 12px;
 }
 
-.clicked {
-    width: 75%;
-    right: 25%;
+.fl-table thead th {
+    background-color: var(--primary);
+    color: #ffffff;
 }
 
-.scroll_style::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
-    background-color: #F5F5F5;
+.fl-table thead th:nth-child(odd) {
+    background-color: var(--accents);
+    color: #ffffff;
 }
 
-.scroll_style::-webkit-scrollbar {
-    width: 12px;
-    background-color: #F5F5F5;
+.fl-table tr:nth-child(even) {
+    background-color: var(--light);
 }
 
-.scroll_style::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
-    background-color: #555;
+/* Responsive */
+@media (max-width: 1080px) {
+    .fl-table {
+        display: flex;
+        width: 100%;
+    }
+    .fl-table thead, 
+    .fl-table tbody, 
+    .fl-table thead th {
+        display: block;
+    }
+    .fl-table thead th:last-child{
+        border-bottom: none;
+    }
+    .fl-table tbody {
+        width: auto;
+        position: relative;
+        overflow-x: auto;
+    }
+    .fl-table td, .fl-table th {
+        padding: 20px .625em .625em .625em;
+        height: 60px;
+        vertical-align: middle;
+        box-sizing: border-box;
+        overflow-x: hidden;
+        overflow-y: auto;
+        width: auto;
+        font-size: 13px;
+        text-overflow: ellipsis;
+    }
+    .fl-table thead th {
+        text-align: left;
+        border-bottom: 1px solid #f7f7f9;
+    }
+    .fl-table tbody tr {
+        width: auto;
+        display: table-cell;
+    }
+    .fl-table tbody tr:nth-child(odd) {
+        background: none;
+    }
+    .fl-table tr:nth-child(even) {
+        background: transparent;
+    }
+    .fl-table tr td:nth-child(odd) {
+        background-color: var(--light);
+        border-right: 1px solid #E6E4E4;
+    }
+    .fl-table tr td:nth-child(even) {
+        border-right: 1px solid #E6E4E4;
+    }
+    .fl-table tbody td {
+        display: block;
+        text-align: center;
+    }
 }
-

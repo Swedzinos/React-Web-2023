@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Axios from "axios";
 import GetData from "./GetData.js";
+import logo from "../images/amw_logo.png";
 import "../css/Sidebar.css";
 import "../css/List.css";
 
@@ -82,64 +83,61 @@ const TableUI = () => {
                 </select>  
             </>
         );
-        
-                
-         
     }
 
     const tableData = (
         <tr>
-            <th>
+            <td>
                 <SelectData url="labs" dataToShow="id" innerRef={lab_id} />
-            </th>
-            <th>
+            </td>
+            <td>
                 <div className="inp-box">
                     <input className="inp-effect" type="text" placeholder="Ilość..." ref={amount} />
                     <span className="focus-border">
                         <i></i>
                     </span>
                 </div>
-            </th>
-            <th>
+            </td>
+            <td>
                 <SelectData url="places" dataToShow="name" innerRef={place} />
-            </th>
-            <th>
+            </td>
+            <td>
                 <div className="inp-box">
                     <input className="inp-effect" type="text" placeholder="Nazwa sprzętu..." ref={name} />
                     <span className="focus-border">
                         <i></i>
                     </span>
                 </div>
-            </th>
-            <th>
+            </td>
+            <td>
                 <div className="inp-box">
                     <input className="inp-effect" type="text" placeholder="Nr inwentarzowy..." ref={inventory_number} />
                     <span className="focus-border">
                         <i></i>
                     </span>
                 </div>
-            </th>
-            <th>
+            </td>
+            <td>
                 <SelectData url="users" dataToShow="username" innerRef={user_name} />
-            </th>
-            <th>
+            </td>
+            <td>
                 <select className="addElementTable" name="rodzajsprzetu" ref={category} >
                     <option value="elektronika">Elektronika</option>
                     <option value="mebel">Mebel</option>
                 </select>
-            </th>
-            <th>
+            </td>
+            <td>
                 <select className="addElementTable" name="typsprzetu" ref={state_type} >
                     <option value="Stanowy">Stanowy</option>
                     <option value="Bezstanowy">Bezstanowy</option>
                 </select>
-            </th>
-            <th>
+            </td>
+            <td>
                 <select className="addElementTable" name="dowybrakowania" ref={damaged} >
                     <option value="Tak">Tak</option>
                     <option value="Nie">Nie</option>
                 </select>
-            </th>
+            </td>
         </tr>
     );
 
@@ -174,7 +172,9 @@ const TableUI = () => {
 
     const header = (
         <tr>
-            <button  onClick={SortingItems("lab_id")}><th>Nr laboranta</th></button>
+            <th>
+                <button onClick={SortingItems("lab_id")}>Nr laboranta</button>
+            </th>
             <th onClick={SortingItems("amount")}>Ilość</th>
             <th onClick={SortingItems("place")}>place</th>
             <th onClick={SortingItems("name")}>Nazwa sprzętu</th>
@@ -198,30 +198,47 @@ const TableUI = () => {
 
     return (
         <>
-            <div>
-                <table className={"inventory_table scroll_style " + (isClicked ? "clicked" : "")}>
-                    <thead>
-                        {header}
-                        {tableData}
-                    </thead>
-                    
-                    {SearchValue == "undefined" || SearchValue == ""  ? <tbody>{showData}</tbody>:<tbody>{showDataSearch(SearchValue)}</tbody>}
-                    
-                    <tfoot>
+            <nav>
+                <div className="brand">
+                    <div className="brand-logo">
+                        <img src={logo} alt="Logo Akademii Marynarki Wojennej" />
+                    </div>
+                    <h2 className="brand-name">Wykaz ewidencyjny materiałów katedry informatyki</h2>
+                </div>
 
-                    </tfoot> 
-                </table>
-            </div>
+                <div className="sidebar-trigger" >
+                    <button onClick={buttonHandler} >
+                        <i className="fa-solid fa-bars"></i>
+                    </button>
+                </div>
+            </nav>
 
-            <div className={(isClicked ? "sidebarActive":"") + " sidebar"} >
-                <button onClick={buttonHandler} >
-                    <i className="fa-solid fa-bars"></i>
-                </button>
-                <button className={isClicked ? "navElementOpen" : "navElementClosed"} onClick={submitPost}>Dodaj</button>
-                <h3 className={isClicked ? "navElementOpen" : "navElementClosed"}>Filtr</h3>
-                <input className={isClicked ? "navElementOpen" : "navElementClosed"} id="Search" type="text" value={SearchValue} onChange={(e) => {setSearchValue(e.target.value)}}></input>
-                <a className={isClicked ? "navElementOpen" : "navElementClosed"} href="#">Link 3</a>
-            </div>
+            <section>
+
+                <div className="table-wrapper">
+                    <table className={"fl-table " + (isClicked ? "clicked" : "")}>
+                        <thead>
+                            {header}
+                        </thead>
+                        
+                        <tbody>
+                            {tableData}
+                            { SearchValue == "undefined" || SearchValue == ""  ? showData : showDataSearch(SearchValue) }
+                        </tbody>
+                        
+                        
+                    </table>
+                </div>
+
+                <aside className={(isClicked ? "sidebarActive":"") + " sidebar"} >
+
+                    <button className={isClicked ? "navElementOpen" : "navElementClosed"} onClick={submitPost}>Dodaj</button>
+                    <h3 className={isClicked ? "navElementOpen" : "navElementClosed"}>Filtr</h3>
+                    <input className={isClicked ? "navElementOpen" : "navElementClosed"} id="Search" type="text" value={SearchValue} onChange={(e) => {setSearchValue(e.target.value)}}></input>
+                    <a className={isClicked ? "navElementOpen" : "navElementClosed"} href="#">Link 3</a>
+
+                </aside>
+            </section>
         </>
     );
 

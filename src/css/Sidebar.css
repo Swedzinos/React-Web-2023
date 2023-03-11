@@ -1,24 +1,28 @@
+@import url("./vars.css");
+
 * {
     box-sizing: border-box;
+    overflow: hidden;
 }
+
 .sidebar {
-    width: 5%;
-    height: 100%;
-    padding: 1em 2.5em;
-    position: absolute;
-    left: 95%;
+    width: 0%;
+    height: calc(100vh - 120px);
+    background-color: var(--primary);
+    color: var(--light);
     transition-duration: 0.5s;
 }
-.sidebarActive{
-    background-color: rgba(255, 255, 255, 0.5);
+
+.sidebarActive {
     width: 25%;
-    left: 75%;
+    padding: 1em 2.5em;
 }
+
 .navElementOpen {
     width: 100%;
     align-items: center;
-
 }
+
 .navElementClosed {
     display: none;
 }
