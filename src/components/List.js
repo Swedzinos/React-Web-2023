@@ -2,25 +2,28 @@ import React, { useState, useEffect, useRef } from "react";
 import Axios from "axios";
 import GetData from "./GetData.js";
 import logo from "../images/amw_logo.png";
+import { useReactToPrint } from "react-to-print";
+import Pagination from "./Pagination.js";
 import "../css/Sidebar.css";
 import "../css/List.css";
 
 const TableUI = () => {
-    
-    const showData = GetData().map((val) => (
-        <tr key={val.id}>
-            <td>{val.lab_id}</td>
-            <td>{val.amount}</td>
-            <td>{val.place}</td>
-            <td>{val.name}</td>
-            <td>{val.inventory_number}</td>
-            <td>{val.user_name}</td>
-            <td>{val.category}</td>
-            <td>{val.state}</td>
-            <td>{val.damaged}</td>
-        </tr>  
-    ));
-    
+    const showData = (currentPosts) => {
+        return currentPosts.map((val) => (
+            <tr key={val.id}>
+                <td>{val.lab_id}</td>
+                <td>{val.amount}</td>
+                <td>{val.place}</td>
+                <td>{val.name}</td>
+                <td>{val.inventory_number}</td>
+                <td>{val.user_name}</td>
+                <td>{val.category}</td>
+                <td>{val.state}</td>
+                <td>{val.damaged}</td>
+            </tr>  
+        ));
+    }
+  
     const [SearchValue, setSearchValue] = useState("");  
     const filteredData = GetData().filter((val) => {
         return Object.values(val).join('').toLowerCase().includes(SearchValue.toLowerCase())
@@ -86,7 +89,7 @@ const TableUI = () => {
     }
 
     const tableData = (
-        <tr>
+        <tr id="insertDataRow">
             <td>
                 <SelectData url="labs" dataToShow="id" innerRef={lab_id} />
             </td>
@@ -166,7 +169,7 @@ const TableUI = () => {
         console.log("Wysłano");
     };
 
-    const SortingItems = value =>{
+    const SortingItems = (value) => {
         console.log(value);
     }
 
@@ -196,6 +199,32 @@ const TableUI = () => {
         console.log(isClicked);
     }, [isClicked]);
 
+
+    const componentPDF = useRef();
+    const SetupTableToExport = () => {
+        const root = componentPDF.current;
+        const copyOfRoot = root.cloneNode(true);
+        const rowToRemove = copyOfRoot.querySelector("#insertDataRow");
+        rowToRemove.remove();
+        
+        console.log(copyOfRoot);
+        return copyOfRoot;
+    }
+
+    const generatePDF = useReactToPrint({
+        content: () => SetupTableToExport(),
+        documentTitle: "Inventory raport",
+        onAfterPrint: () => console.log("")
+    });
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [postsPerPage] = useState(20);
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = GetData().slice(indexOfFirstPost, indexOfLastPost);
+    const paginate = pageNumber => setCurrentPage(pageNumber);
+
+
     return (
         <>
             <nav>
@@ -214,25 +243,30 @@ const TableUI = () => {
             </nav>
 
             <section>
-
                 <div className="table-wrapper">
-                    <table className={"fl-table " + (isClicked ? "clicked" : "")}>
+                    <table className={"fl-table " + (isClicked ? "clicked" : "")} ref={componentPDF}>
                         <thead>
                             {header}
                         </thead>
                         
                         <tbody>
                             {tableData}
-                            { SearchValue == "undefined" || SearchValue == ""  ? showData : showDataSearch(SearchValue) }
+                            { SearchValue == "undefined" || SearchValue == ""  ? showData(currentPosts) : showDataSearch(SearchValue) }
                         </tbody>
-                        
-                        
                     </table>
+
+                    <Pagination
+                        postsPerPage={postsPerPage}
+                        totalPosts={GetData().length}
+                        currentPage={currentPage}
+                        paginate={paginate}
+                    />
                 </div>
 
                 <aside className={(isClicked ? "sidebarActive":"") + " sidebar"} >
 
                     <button className={isClicked ? "navElementOpen" : "navElementClosed"} onClick={submitPost}>Dodaj</button>
+                    <button className={isClicked ? "navElementOpen" : "navElementClosed"} onClick={generatePDF}>Export PDF</button>
                     <h3 className={isClicked ? "navElementOpen" : "navElementClosed"}>Filtr</h3>
                     <input className={isClicked ? "navElementOpen" : "navElementClosed"} id="Search" type="text" value={SearchValue} onChange={(e) => {setSearchValue(e.target.value)}}></input>
                     <a className={isClicked ? "navElementOpen" : "navElementClosed"} href="#">Link 3</a>

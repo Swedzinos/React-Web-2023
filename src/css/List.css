@@ -70,6 +70,7 @@ section {
 
 .table-wrapper {
     width: 100%;
+    transition: .5s;
 }
 
 .table-wrapper .fl-table.clicked {
@@ -108,8 +109,16 @@ section {
     background-color: var(--light);
 }
 
+
 /* Responsive */
 @media (max-width: 1080px) {
+    section {
+        justify-content: space-between;
+    }
+    .table-wrapper:has(.fl-table.clicked)  {
+        width: 80%;
+        margin: 0;
+    }
     .fl-table {
         display: flex;
         width: 100%;
@@ -163,4 +172,9 @@ section {
         display: block;
         text-align: center;
     }
+}
+
+/* For data to PDF export */
+@media print {
+    @page { size: landscape; }
 }
