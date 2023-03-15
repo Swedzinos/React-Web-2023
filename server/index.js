@@ -45,28 +45,6 @@ app.get("/api/get/places", (req, res) => {
         res.send(result);
     });
 });
-app.get(`/api/get/asc/:column`, (req, res) => {
-    const column = req.params.column;
-    console.log(column);
-    db.query('SELECT * FROM inventory_list ORDER BY '+column+' ASC',column,(err, result) => {
-        if (err) {
-            console.log(err);
-        }
-        res.send(result);
-    });
-
-})
-app.get("/api/get/desc/:column", (req, res) => {
-    const column = req.params.column;
-    console.log(column);
-    db.query('SELECT * FROM inventory_list ORDER BY '+column+' DESC', column, (err, result) => {
-        if (err) {
-            console.log(err);
-        }
-        res.send(result);
-    });
-
-})
 
 // Route for creating the thing in progress
 app.post("/api/create", (req, res) => {
