@@ -183,48 +183,40 @@ class List extends React.Component {
             return copyOfRoot;
         }
         
-        let [url_, seturl_] = useState([]);
-        const [isClickedAgain, setIsClickedAgain] = useState(false);
-        let [sortedColumn, setsortedColumn] = useState(null);
+        const [order, setorder] = useState("ASC");
         const [currentPage, setCurrentPage] = useState(1);
         const [postsPerPage] = useState(20); {/* Ilość wierszy na strone */}
         const indexOfLastPost = currentPage * postsPerPage;
         const indexOfFirstPost = indexOfLastPost - postsPerPage;
-        const currentPosts = GetData(url_).slice(indexOfFirstPost, indexOfLastPost);
-
-
+        const cos = GetData().slice(indexOfFirstPost, indexOfLastPost);
+        const [data, setdata] = useState([]);
         const generatePDF = useReactToPrint({
             content: () => SetupTableToExport(),
             documentTitle: "Inventory raport",
             onAfterPrint: () => console.log("")
         });
-
+        console.log(data);
         const sortHeader = (column) =>{
-            setsortedColumn(column);
-            if(sortedColumn != null){
-                let url = [];
-                if(!isClickedAgain){
-                    url ="asc/"+column;
-                    setIsClickedAgain(current => !current);
-                    console.log(`posortowałem  kolumne ${column}`);
-                }else if(isClickedAgain){
-                    url = "desc/"+column;
-                    setIsClickedAgain(current => !current);
-                    console.log(`posortowałem  kolumne ${column}`);
-                    
-                }
-                seturl_(url);
+            if(order === "ASC"){ 
+                const sorted = cos.sort((a,b)=>
+                a[column].toString().toLowerCase() > b[column].toString().toLowerCase() ? 1 : -1
+                );
+                setdata(sorted);
+                setorder("DESC");
             }
-
-            
+            if(order === "DESC"){ 
+                const sorted = cos.sort((a,b)=>
+                a[column].toString().toLowerCase() < b[column].toString().toLowerCase() ? 1 : -1
+                );
+                setdata(sorted);
+                setorder("ASC");
+            }
         };
-    
-        
         
         const paginate = pageNumber => setCurrentPage(pageNumber);
         
-        const showData = (currentPosts) => {
-            let table = currentPosts.map((val) => (
+        const showData =
+                data.map((val) => (
                 <tr key={val.id}>
                     <td>{val.lab_id}</td>
                     <td>{val.amount}</td>
@@ -237,21 +229,6 @@ class List extends React.Component {
                     <td>{val.damaged}</td>
                 </tr>  
             ));
-            return table;
-        }
-        const header = (
-            <tr>
-                <th onClick={() => sortHeader("lab_id")}>Nr laboranta</th>
-                <th onClick={() => sortHeader("amount")}>Ilość</th>
-                <th onClick={() => sortHeader("place")}>place</th>
-                <th onClick={() => sortHeader("name")}>Nazwa sprzętu</th>
-                <th onClick={() => sortHeader("inventory_number")}>Nr inw.</th>
-                <th onClick={() => sortHeader("user_name")}>Użytkownik</th>
-                <th onClick={() => sortHeader("category")}>Rodzaj sprzętu</th>
-                <th onClick={() => sortHeader("state_type")}>Typ sprzętu</th>
-                <th onClick={() => sortHeader("damaged")}>Do wybrakowania</th>
-            </tr>
-        )
 
         return (
             <>
@@ -274,12 +251,22 @@ class List extends React.Component {
                     <div className="table-wrapper">
                         <table className={"fl-table " + (isClicked ? "clicked" : "")} ref={componentPDF}>
                             <thead>
-                                {header}
+                            <tr>
+                                <th onClick={() => sortHeader("lab_id")}>Nr laboranta</th>
+                                <th onClick={() => sortHeader("amount")}>Ilość</th>
+                                <th onClick={() => sortHeader("place")}>place</th>
+                                <th onClick={() => sortHeader("name")}>Nazwa sprzętu</th>
+                                <th onClick={() => sortHeader("inventory_number")}>Nr inw.</th>
+                                <th onClick={() => sortHeader("user_name")}>Użytkownik</th>
+                                <th onClick={() => sortHeader("category")}>Rodzaj sprzętu</th>
+                                <th onClick={() => sortHeader("state_type")}>Typ sprzętu</th>
+                                <th onClick={() => sortHeader("damaged")}>Do wybrakowania</th>
+                            </tr>
                             </thead>
                             
                             <tbody>
                                 {tableData}
-                                { SearchValue == "undefined" || SearchValue == ""  ? showData(currentPosts) : showDataSearch(SearchValue) }
+                                { SearchValue == "undefined" || SearchValue == ""  ? showData : showDataSearch(SearchValue) }
                             </tbody>
                         </table>
     
