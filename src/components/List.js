@@ -186,6 +186,11 @@ class List extends React.Component {
         let [url_, seturl_] = useState([]);
         const [isClickedAgain, setIsClickedAgain] = useState(false);
         let [sortedColumn, setsortedColumn] = useState(null);
+        const [currentPage, setCurrentPage] = useState(1);
+        const [postsPerPage] = useState(20); {/* Ilość wierszy na strone */}
+        const indexOfLastPost = currentPage * postsPerPage;
+        const indexOfFirstPost = indexOfLastPost - postsPerPage;
+        const currentPosts = GetData(url_).slice(indexOfFirstPost, indexOfLastPost);
 
 
         const generatePDF = useReactToPrint({
@@ -199,27 +204,22 @@ class List extends React.Component {
             if(sortedColumn != null){
                 let url = [];
                 if(!isClickedAgain){
-                    url = GetData("asc/"+column).slice(indexOfFirstPost, indexOfLastPost);
+                    url ="asc/"+column;
                     setIsClickedAgain(current => !current);
                     console.log(`posortowałem  kolumne ${column}`);
                 }else if(isClickedAgain){
-                    url = "desc/lab_id";
+                    url = "desc/"+column;
                     setIsClickedAgain(current => !current);
                     console.log(`posortowałem  kolumne ${column}`);
                     
                 }
-                seturl_("desc/lab_id");
+                seturl_(url);
             }
 
             
         };
     
-        const [currentPage, setCurrentPage] = useState(1);
-        const [postsPerPage] = useState(20); {/* Ilość wierszy na strone */}
-        const indexOfLastPost = currentPage * postsPerPage;
-        const indexOfFirstPost = indexOfLastPost - postsPerPage;
-        console.log(url_);
-        const currentPosts = GetData(url_).slice(indexOfFirstPost, indexOfLastPost);
+        
         
         const paginate = pageNumber => setCurrentPage(pageNumber);
         
