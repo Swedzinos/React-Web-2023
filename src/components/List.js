@@ -62,18 +62,25 @@ class List extends React.Component {
         
         const SelectData = (props) => {
             const data = [];
- 
+            const setnul = (
+                <option value="" >
+
+                </option> 
+            )
             GetData(props.url).map((val, idx) => (
                 data.push(val[props.dataToShow])
             ))
             return(
                 <>
                     <select className="addElementTable" url={props.url} name={props.dataToShow} ref={props.innerRef}>
-                    { data.map((val, idx) => (
+                    {props.url === "places" || props.url === "users" ? setnul : ""}
+                    { 
+                    data.map((val, idx) => (
                             <option key={idx} value={val} > 
                                 {val} 
                             </option>  
-                    ))}
+                    ))
+                    }
                     </select>  
                 </>
             );
@@ -86,7 +93,7 @@ class List extends React.Component {
                 </td>
                 <td>
                     <div className="inp-box">
-                        <input className="inp-effect" type="text" placeholder="Ilość..." ref={amount} />
+                        <input className="inp-effect" type="number" placeholder="Ilość..." ref={amount} />
                         <span className="focus-border">
                             <i></i>
                         </span>
@@ -138,26 +145,30 @@ class List extends React.Component {
         
         const submitPost = async (e) => {
             e.preventDefault();
-    
-            await Axios.post("http://localhost:3002/api/create", {
-                lab_id: lab_id.current.value,
-                amount: amount.current.value,
-                place_id: place.current.value,
-                name: name.current.value,
-                inventory_number: inventory_number.current.value,
-                user_id: user_name.current.value,
-                category_id: category.current.value,
-                state_type: state_type.current.value,
-                damaged: damaged.current.value,
-            }).then(res => {
-                console.log(res.status);
-                console.log(res.data);
-            }).catch(err => {
-                console.log(err);
-            });
-    
-            window.location.reload(false);
-            console.log("Wysłano");
+            if(amount.current.value === !null && name.current.value === !null && inventory_number.current.value === !null)
+            {
+                await Axios.post("http://localhost:3002/api/create", {
+                    lab_id: lab_id.current.value,
+                    amount: amount.current.value,
+                    place_id: place.current.value,
+                    name: name.current.value,
+                    inventory_number: inventory_number.current.value,
+                    user_id: user_name.current.value,
+                    category_id: category.current.value,
+                    state_type: state_type.current.value,
+                    damaged: damaged.current.value,
+                }).then(res => {
+                    console.log(res.status);
+                    console.log(res.data);
+                }).catch(err => {
+                    console.log(err);
+                });
+        
+                window.location.reload(false);
+                console.log("Wysłano");
+        }else{
+            alert("Dane które wprowadziłeś są złe sprawdź je i spróbuj ponownie!");
+        }
         };
     
         const [isClicked, setIsClicked] = useState(false);
@@ -263,7 +274,7 @@ class List extends React.Component {
                             
                             <tbody>
                                 {tableData}
-                                { SearchValue == "undefined" || SearchValue == ""  ? showData : showDataSearch() }
+                                { SearchValue === "undefined" || SearchValue === ""  ? showData : showDataSearch() }
                             </tbody>
                         </table>
     

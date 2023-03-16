@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Axios from "axios";
 
 const GetData = (endpoint="") => {
     const [postList, setPostList] = useState([]);
     let url = `http://localhost:3002/api/get/`
 
-    if(endpoint != "") {
+    if(endpoint !== "") {
         url += `${endpoint}`;
     }
 
