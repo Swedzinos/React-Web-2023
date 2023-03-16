@@ -9,21 +9,31 @@ import "../css/List.css";
 class List extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {count: props.initialCount};
         this.TableUI = this.TableUI.bind(this);
-      }
+    }
     
     TableUI = () => {
-    
+        const [data, setdata] = useState([]);
+        const [currentPage, setCurrentPage] = useState(1);
+        const [postsPerPage] = useState(20);
+        const indexOfLastPost = currentPage * postsPerPage;
+        const indexOfFirstPost = indexOfLastPost - postsPerPage;
+        let currentData = data.slice(indexOfFirstPost, indexOfLastPost);
+
+        useEffect(() => {
+            Axios.get(`http://localhost:3002/api/get/`).then((data) => {
+                setdata(data.data);
+            });
+        }, []);
       
         const [SearchValue, setSearchValue] = useState("");  
-        const filteredData = GetData().filter((val) => {
+        const filteredData = data.filter((val) => {
             return Object.values(val).join('').toLowerCase().includes(SearchValue.toLowerCase())
         })
     
-        const showDataSearch = (SearchValue) =>{
+        const showDataSearch = () => {
             
-            const showSearchData = filteredData.map((val) => (
+            const showSearchData = filteredData.slice(indexOfFirstPost, indexOfLastPost).map((val) => (
                 <tr key={val.id}>
                     <td>{val.lab_id}</td>
                     <td>{val.amount}</td>
@@ -36,16 +46,10 @@ class List extends React.Component {
                     <td>{val.damaged}</td>
                 </tr>  
             ));
+
             return showSearchData;
         }
           
-    
-        /*  Aby uzyskac dostep do wartosci z zmiennych uzywajacych useRef (te poniezej):
-    
-            <nazwa_zmiennej>.current.value
-    
-            https://medium.com/@shriharim006/react-how-to-stop-re-rendering-in-react-components-bab286f13d33#fb48
-        */
         const lab_id = useRef(null);
         const amount = useRef(null);
         const place = useRef(null);
@@ -58,18 +62,13 @@ class List extends React.Component {
         
         const SelectData = (props) => {
             const data = [];
-            const url = props.url;
-            const dataName = props.dataToShow;
-            {/* To get value from ref:
-                
-                props.innerRef.current.value
-            */}
-            GetData(url).map((val, idx) => (
-                data.push(val[dataName])
+ 
+            GetData(props.url).map((val, idx) => (
+                data.push(val[props.dataToShow])
             ))
             return(
                 <>
-                    <select className="addElementTable" url={props.url} name={dataName} ref={props.innerRef}>
+                    <select className="addElementTable" url={props.url} name={props.dataToShow} ref={props.innerRef}>
                     { data.map((val, idx) => (
                             <option key={idx} value={val} > 
                                 {val} 
@@ -143,11 +142,11 @@ class List extends React.Component {
             await Axios.post("http://localhost:3002/api/create", {
                 lab_id: lab_id.current.value,
                 amount: amount.current.value,
-                place_id: place.current.value, //todo
+                place_id: place.current.value,
                 name: name.current.value,
                 inventory_number: inventory_number.current.value,
-                user_id: user_name.current.value, //todo
-                category_id: category.current.value, //todo
+                user_id: user_name.current.value,
+                category_id: category.current.value,
                 state_type: state_type.current.value,
                 damaged: damaged.current.value,
             }).then(res => {
@@ -167,11 +166,6 @@ class List extends React.Component {
             setIsClicked(current => !current);
         }
     
-        useEffect(() => {
-            console.log(isClicked);
-        }, [isClicked]);
-    
-    
         const componentPDF = useRef();
         const SetupTableToExport = () => {
             const root = componentPDF.current;
@@ -184,39 +178,42 @@ class List extends React.Component {
         }
         
         const [order, setorder] = useState("ASC");
-        const [currentPage, setCurrentPage] = useState(1);
-        const [postsPerPage] = useState(20); {/* Ilość wierszy na strone */}
-        const indexOfLastPost = currentPage * postsPerPage;
-        const indexOfFirstPost = indexOfLastPost - postsPerPage;
-        const cos = GetData().slice(indexOfFirstPost, indexOfLastPost);
-        const [data, setdata] = useState([]);
+       
         const generatePDF = useReactToPrint({
             content: () => SetupTableToExport(),
             documentTitle: "Inventory raport",
             onAfterPrint: () => console.log("")
         });
-        console.log(data);
-        const sortHeader = (column) =>{
+
+        const sortHeader = (column, isNumber=false) =>{
+            let sorted = "";
             if(order === "ASC"){ 
-                const sorted = cos.sort((a,b)=>
-                a[column].toString().toLowerCase() > b[column].toString().toLowerCase() ? 1 : -1
-                );
-                setdata(sorted);
+                if(isNumber) {
+                    sorted = data.sort((a,b) => a[column] > b[column] ? 1 : -1);
+                } else {
+                    sorted = data.sort((a,b) => a[column].toString().toLowerCase() > b[column].toString().toLowerCase() ? 1 : -1);
+                }
+                
                 setorder("DESC");
             }
             if(order === "DESC"){ 
-                const sorted = cos.sort((a,b)=>
-                a[column].toString().toLowerCase() < b[column].toString().toLowerCase() ? 1 : -1
-                );
-                setdata(sorted);
+                if(isNumber) {
+                    sorted = data.sort((a,b) => a[column] < b[column] ? 1 : -1);
+                } else {
+                    sorted = data.sort((a,b) => a[column].toString().toLowerCase() < b[column].toString().toLowerCase() ? 1 : -1);
+                }
+
                 setorder("ASC");
             }
+
+            setdata(sorted)
+            paginate(1)
         };
         
         const paginate = pageNumber => setCurrentPage(pageNumber);
         
         const showData =
-                data.map((val) => (
+            currentData.map((val) => (
                 <tr key={val.id}>
                     <td>{val.lab_id}</td>
                     <td>{val.amount}</td>
@@ -252,27 +249,27 @@ class List extends React.Component {
                         <table className={"fl-table " + (isClicked ? "clicked" : "")} ref={componentPDF}>
                             <thead>
                             <tr>
-                                <th onClick={() => sortHeader("lab_id")}>Nr laboranta</th>
-                                <th onClick={() => sortHeader("amount")}>Ilość</th>
+                                <th onClick={() => sortHeader("lab_id", true)}>Nr laboranta</th>
+                                <th onClick={() => sortHeader("amount", true)}>Ilość</th>
                                 <th onClick={() => sortHeader("place")}>place</th>
                                 <th onClick={() => sortHeader("name")}>Nazwa sprzętu</th>
                                 <th onClick={() => sortHeader("inventory_number")}>Nr inw.</th>
                                 <th onClick={() => sortHeader("user_name")}>Użytkownik</th>
                                 <th onClick={() => sortHeader("category")}>Rodzaj sprzętu</th>
-                                <th onClick={() => sortHeader("state_type")}>Typ sprzętu</th>
+                                <th onClick={() => sortHeader("state")}>Typ sprzętu</th>
                                 <th onClick={() => sortHeader("damaged")}>Do wybrakowania</th>
                             </tr>
                             </thead>
                             
                             <tbody>
                                 {tableData}
-                                { SearchValue == "undefined" || SearchValue == ""  ? showData : showDataSearch(SearchValue) }
+                                { SearchValue == "undefined" || SearchValue == ""  ? showData : showDataSearch() }
                             </tbody>
                         </table>
     
                         <Pagination
                             postsPerPage={postsPerPage}
-                            totalPosts={GetData().length}
+                            totalPosts={SearchValue ? filteredData.length : data.length}
                             currentPage={currentPage}
                             paginate={paginate}
                         />
@@ -290,7 +287,6 @@ class List extends React.Component {
                 </section>
             </>
         );
-    
     }
 
     render() {
