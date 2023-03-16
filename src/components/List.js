@@ -59,6 +59,8 @@ class List extends React.Component {
         const category = useRef(null);
         const state_type = useRef(null);
         const damaged = useRef(null);
+        const changeUsername = useRef(null);
+        const [idToChange, setidToChange] = useState(0);
         
         const SelectData = (props) => {
             const data = [];
@@ -67,14 +69,27 @@ class List extends React.Component {
 
                 </option> 
             )
+            const change = (columntoshow) => (
+                <option value={columntoshow} ref={props.id}>
+                    {columntoshow}
+                </option>
+            )
+            function nothing(){
+
+            }
             GetData(props.url).map((val, idx) => (
                 data.push(val[props.dataToShow])
             ))
             return(
                 <>
-                    <select className="addElementTable" url={props.url} name={props.dataToShow} ref={props.innerRef}>
+                    <select className="addElementTable" url={props.url} name={props.dataToShow} ref={props.innerRef} columntoshow = {props.columntoshow} idcolumn = {props.idcolumn} onChange = {setidToChange(props.idcolumn)} >
+                    { props.columntoshow !== undefined || props.columntoshow !== "" ? 
+                        change(props.columntoshow)
+                    :
+                        ""
+                    }
                     {props.url === "places" || props.url === "users" ? setnul : ""}
-                    { 
+                    {
                     data.map((val, idx) => (
                             <option key={idx} value={val} > 
                                 {val} 
@@ -89,7 +104,7 @@ class List extends React.Component {
         const tableData = (
             <tr id="insertDataRow">
                 <td>
-                    <SelectData url="labs" dataToShow="id" innerRef={lab_id} />
+                    <SelectData url="labs" dataToShow="id" innerRef={lab_id}  />
                 </td>
                 <td>
                     <div className="inp-box">
@@ -141,7 +156,20 @@ class List extends React.Component {
                 </td>
             </tr>
         );
-    
+        const submitUpdatePost = async (e) => {
+            e.preventDefault();
+
+            // await Axios.post("http://localhost:3002/api/update", {
+            //     username: changeUsername.current.value,
+            //     id: idToChange.current.value
+            // }).then(res => {
+            //     console.log(res.status);
+            //     console.log(res.data);
+            // }).catch(err => {
+            //     console.log(err);
+            // });
+            console.log(idToChange);
+        }
         
         const submitPost = async (e) => {
             e.preventDefault();
@@ -231,13 +259,13 @@ class List extends React.Component {
                     <td>{val.place}</td>
                     <td>{val.name}</td>
                     <td>{val.inventory_number}</td>
-                    <td>{val.user_name}</td>
+                    <td><SelectData url = "users" dataToShow = "username" innerRef = {changeUsername} columntoshow={val.user_name} idcolumn={val.id} /></td>
                     <td>{val.category}</td>
                     <td>{val.state}</td>
                     <td>{val.damaged}</td>
                 </tr>  
             ));
-
+        
         return (
             <>
                 <nav>
@@ -292,7 +320,7 @@ class List extends React.Component {
                         <button className={isClicked ? "navElementOpen" : "navElementClosed"} onClick={generatePDF}>Export PDF</button>
                         <h3 className={isClicked ? "navElementOpen" : "navElementClosed"}>Filtr</h3>
                         <input className={isClicked ? "navElementOpen" : "navElementClosed"} id="Search" type="text" value={SearchValue} onChange={(e) => {setSearchValue(e.target.value)}}></input>
-                        <a className={isClicked ? "navElementOpen" : "navElementClosed"} href="#">Link 3</a>
+                        <button className={isClicked ? "navElementOpen" : "navElementClosed"} onClick={submitUpdatePost}>wprowadz zmiane w wierszy</button>
     
                     </aside>
                 </section>

@@ -68,7 +68,18 @@ app.post("/api/create", (req, res) => {
         }
     );
 });
-
+app.post("/api/update", (reg, res) => {
+    const username = reg.body.username;
+    db.query("UPDATE `inventory_list`(`user_name`) VALUES (?);",
+        [username],
+        (err, result) => {
+            if (err) {
+                console.log(err);
+            }
+            console.log(result);
+        }
+    );
+});
 
 // Route to delete a thing in progress
 
