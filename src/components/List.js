@@ -60,7 +60,6 @@ class List extends React.Component {
         const state_type = useRef(null);
         const damaged = useRef(null);
         const changeUsername = useRef(null);
-        const [idToChange, setidToChange] = useState(0);
         
         const SelectData = (props) => {
             const data = [];
@@ -70,25 +69,22 @@ class List extends React.Component {
                 </option> 
             )
             const change = (columntoshow) => (
-                <option value={columntoshow} ref={props.id}>
+                <option value={columntoshow}>
                     {columntoshow}
                 </option>
             )
-            function nothing(){
-
-            }
             GetData(props.url).map((val, idx) => (
                 data.push(val[props.dataToShow])
             ))
             return(
                 <>
-                    <select className="addElementTable" url={props.url} name={props.dataToShow} ref={props.innerRef} columntoshow = {props.columntoshow} idcolumn = {props.idcolumn} onChange = {setidToChange(props.idcolumn)} >
-                    { props.columntoshow !== undefined || props.columntoshow !== "" ? 
+                    <select className="addElementTable" url={props.url} name={props.dataToShow} ref={props.innerRef} columntoshow = {props.columntoshow}>
+                    { (props.columntoshow !== undefined || props.columntoshow !== "" )? 
                         change(props.columntoshow)
                     :
-                        ""
+                        undefined
                     }
-                    {props.url === "places" || props.url === "users" ? setnul : ""}
+                    {props.url === "places" || props.url === "users" ? setnul : undefined}
                     {
                     data.map((val, idx) => (
                             <option key={idx} value={val} > 
@@ -156,8 +152,7 @@ class List extends React.Component {
                 </td>
             </tr>
         );
-        const submitUpdatePost = async (e) => {
-            e.preventDefault();
+        const submitUpdatePost = async (id, username) => {
 
             // await Axios.post("http://localhost:3002/api/update", {
             //     username: changeUsername.current.value,
@@ -168,7 +163,7 @@ class List extends React.Component {
             // }).catch(err => {
             //     console.log(err);
             // });
-            console.log(idToChange);
+            console.log(id+" "+username);
         }
         
         const submitPost = async (e) => {
@@ -259,10 +254,11 @@ class List extends React.Component {
                     <td>{val.place}</td>
                     <td>{val.name}</td>
                     <td>{val.inventory_number}</td>
-                    <td><SelectData url = "users" dataToShow = "username" innerRef = {changeUsername} columntoshow={val.user_name} idcolumn={val.id} /></td>
+                    <td><SelectData url = "users" dataToShow = "username" innerRef = {changeUsername} columntoshow = {val.user_name}/></td>
                     <td>{val.category}</td>
                     <td>{val.state}</td>
                     <td>{val.damaged}</td>
+                    <td><button onClick={() => submitUpdatePost(val.id, changeUsername.current.value)}>zatwierdz zmiany</button> </td>
                 </tr>  
             ));
         
