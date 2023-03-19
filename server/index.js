@@ -2,7 +2,6 @@ import express from "express";
 import db from "./config/db.js";
 import cors from "cors";
 import crypto from "crypto";
-import { log } from "console";
 
 const app = express();
 const PORT = 3002;
@@ -102,8 +101,7 @@ const encrypt = (content) => {
 app.post("/login", (req, res) => {
     const username = req.body.username;
     const password = encrypt(req.body.password);
-    console.log(password);
-
+    
     db.query("SELECT * FROM `logins` WHERE username = ? AND password = ?;", [username, password], (err, queryRes) => {
         if(err) {
             req.setEncoding({err: err});
@@ -117,15 +115,22 @@ app.post("/login", (req, res) => {
     });
 });
 
-// Route to delete a thing in progress
-
-// app.delete('/api/delete/:id',(req,res)=>{
-// const id = req.params.id;
-
-// db.query("DELETE FROM posts WHERE id= ?", id, (err,result)=>{
-// if(err) {
-// console.log(err)
-//         } }) })
+app.delete("/delete/:id", (req, res) => {
+    const id = req.params.id;
+   
+    db.query("DELETE FROM `inventory_list` WHERE `id` = ?;", [id], (err, queryRes) => {
+        if(err) {
+            console.log(err);
+            res.send(err);
+        } else {
+            if(queryRes.length <= 0){
+                res.send({message: "Cos poszlo nie tak!"})
+            } else {
+                res.send({message: "Usunięto!"})
+            }
+        }
+    })
+})
 
 app.listen(PORT, () => {
     console.log(`Server is running on ${PORT}`);

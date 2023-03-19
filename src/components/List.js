@@ -31,6 +31,14 @@ class List extends React.Component {
         const filteredData = data.filter((val) => {
             return Object.values(val).join('').toLowerCase().includes(SearchValue.toLowerCase())
         })
+
+        const deleteHandler = (id) => {
+            Axios.delete(`http://localhost:3002/delete/${id}`).then(res => {
+                alert(res.data.message);
+            }).catch(err => {
+                console.log(err);
+            });
+        }
     
         const showDataSearch = () => {
             
@@ -49,6 +57,7 @@ class List extends React.Component {
                     <td>{val.damaged}</td>
                     <td>
                         <button onClick={() => submitUpdatePost(val.id, userNameChange.current.value)}>zatwierdz zmiany</button> 
+                        <button onClick={() => deleteHandler(val.id)}>Usun</button> 
                     </td>
                 </tr>  
             ));
@@ -298,6 +307,7 @@ class List extends React.Component {
                     <td>{val.damaged}</td>
                     <td>
                         <button onClick={() => submitUpdatePost(val.id, userNameChange.current.value)}>zatwierdz zmiany</button> 
+                        <button onClick={() => deleteHandler(val.id)}>Usun</button> 
                     </td>
                 </tr>  
             ));
