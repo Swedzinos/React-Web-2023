@@ -64,7 +64,6 @@ class List extends React.Component {
 
             return showSearchData;
         }
-          
         const lab_id = useRef(null);
         const amount = useRef(null);
         const place = useRef(null);
@@ -91,9 +90,9 @@ class List extends React.Component {
                 <>
                     <select className="addElementTable" name={props.dataToShow} ref={props.innerRef} columntoshow = {props.columntoshow}>
                         { 
-                            (props.columntoshow !== undefined || props.columntoshow !== null ) ? 
-                                change(props.columntoshow) 
-                                : null
+                            (props.columntoshow === undefined || props.columntoshow === null ) ? 
+                                null
+                                : change(props.columntoshow) 
                         }
 
                         { data.map((val, idx) => (
@@ -106,16 +105,15 @@ class List extends React.Component {
                             : null
                         ))}
 
-                        { props.url === "places" || props.url === "users" ? 
-                            <option value=""></option> 
+                        { props.url === "places" || props.url === "users"  || props.url === "categories"? 
+                            <option value={null}></option> 
                             : undefined }
                     </select>  
                 </>
             );
         }
 
-        const submitPost = async (e) => {
-            e.preventDefault();
+        const submitPost = async () => {
             if(amount.current.value != null && name.current.value != null && inventory_number.current.value != null)
             {
                 await Axios.post("http://localhost:3002/api/create", {
@@ -133,7 +131,7 @@ class List extends React.Component {
                     console.log(res.data);
                 }).catch(err => {
                     console.log(err);
-                });
+                })
 
                 // window.location.reload(false);
                 console.log("Wysłano");
@@ -198,10 +196,10 @@ class List extends React.Component {
             </tr>
         );
 
-        const submitUpdatePost = async (id, username) => {
+        const submitUpdatePost = async (id) => {
 
             Axios.post("http://localhost:3002/api/update", {
-                username: username,
+                username: userNameChange.current.value,
                 id: id
             }).then(res => {
                 console.log(res.status);
@@ -210,8 +208,8 @@ class List extends React.Component {
                 console.log(err);
             });
 
-            console.log(id+" "+username);
-
+            console.log(id+" "+userNameChange.current.value);
+            
             Axios.get(`http://localhost:3002/api/get/`).then((data) => {
                 setdata(data.data);
             });
@@ -300,18 +298,17 @@ class List extends React.Component {
                     <td>{val.name}</td>
                     <td>{val.inventory_number}</td>
                     <td>
-                        <SelectData url="users" dataToShow="username" innerRef = {userNameChange} columntoshow={val.user_name}/>
+                        <SelectData url="users" dataToShow="username" innerRef = {userNameChange.current} columntoshow={val.user_name}/>
                     </td>
                     <td>{val.category}</td>
                     <td>{val.state}</td>
                     <td>{val.damaged}</td>
                     <td>
-                        <button onClick={() => submitUpdatePost(val.id, userNameChange.current.value)}>zatwierdz zmiany</button> 
+                        <button onClick={() => submitUpdatePost(val.id)}>zatwierdz zmiany</button> 
                         <button onClick={() => deleteHandler(val.id)}>Usun</button> 
                     </td>
                 </tr>  
             ));
-        
         return (
             <>
                 <nav>

@@ -56,17 +56,27 @@ app.get("/api/get/categories", (req, res) => {
     });
 });
 
-// Route for creating the thing in progress
+// Route for creating
 app.post("/api/create", (req, res) => {
     const lab_id = req.body.lab_id;
     const amount = req.body.amount;
-    const place_id = req.body.place_id;
+    let place_id = req.body.place_id;
     const name = req.body.name;
     const inventory_number = req.body.inventory_number;
-    const user_id = req.body.user_id;
+    let user_id = req.body.user_id;
     const category_id = req.body.category_id;
-    const state_type = req.body.state_type;
+    let state_type = req.body.state_type;
     const damaged = req.body.damaged;
+    if(place_id == ''){
+        place_id = null;
+    }
+    if(user_id == ''){
+        user_id = null;
+    }
+    if(state_type == ''){
+        state_type = null;
+    }
+    console.log(place_id);
 
     db.query("INSERT INTO `inventory_list`(`lab_id`, `user_name`, `place`, `category`, `amount`, `name`, `inventory_number`, `state`, `damaged`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
         [lab_id, user_id, place_id, category_id, amount, name, inventory_number, state_type, damaged],
@@ -78,12 +88,18 @@ app.post("/api/create", (req, res) => {
         }
     );
 });
+
+
 app.post("/api/update", (req, res) => {
     const id = req.body.id;
-    const username = req.body.username;
-    console.log("UPDATE `inventory_list` SET `user_name` = " + username + " WHERE `id` = " + id + ";");
+    let username = req.body.username;
+    if(username == ''){
+        username = null;
+    }
+
+    console.log("UPDATE `inventory_list` SET `user_name` = " + username + " WHERE `id` = "+ id + ";");
     // db.query("UPDATE `inventory_list` SET `user_name`= ? WHERE `id` = ?;",
-    db.query("UPDATE `inventory_list` SET `user_name`= '" + username + "' WHERE `id` = " + id + ";",
+    db.query("UPDATE `inventory_list` SET `user_name`= '" + username + "' WHERE `id` =  "+ id +" ;",
         [username, id],
         (err, result) => {
             if (err) {
