@@ -7,10 +7,7 @@ html {
 }
 
 body {
-    background-image: url('../images/background.png');
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
+    background-color: var(--light);
+    color: var(--primary);
     font-family: 'Roboto', sans-serif;
 }

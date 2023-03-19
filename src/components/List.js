@@ -4,11 +4,11 @@ import GetData from "./GetData.js";
 import logo from "../images/amw_logo.png";
 import { useReactToPrint } from "react-to-print";
 import Pagination from "./Pagination.js";
-import "../css/Sidebar.css";
 import "../css/List.css";
 class List extends React.Component {
     constructor(props) {
         super(props);
+        this.loggedAs = this.props.loggedAs;
         this.TableUI = this.TableUI.bind(this);
     }
     
@@ -19,6 +19,7 @@ class List extends React.Component {
         const indexOfLastPost = currentPage * postsPerPage;
         const indexOfFirstPost = indexOfLastPost - postsPerPage;
         let currentData = data.slice(indexOfFirstPost, indexOfLastPost);
+        const userNameChange = useRef(null);
 
         useEffect(() => {
             Axios.get(`http://localhost:3002/api/get/`).then((data) => {
@@ -40,10 +41,15 @@ class List extends React.Component {
                     <td>{val.place}</td>
                     <td>{val.name}</td>
                     <td>{val.inventory_number}</td>
-                    <td>{val.user_name}</td>
+                    <td>
+                        <SelectData url="users" dataToShow="username" innerRef = {userNameChange} columntoshow={val.user_name}/>
+                    </td>
                     <td>{val.category}</td>
                     <td>{val.state}</td>
                     <td>{val.damaged}</td>
+                    <td>
+                        <button onClick={() => submitUpdatePost(val.id, userNameChange.current.value)}>zatwierdz zmiany</button> 
+                    </td>
                 </tr>  
             ));
 
@@ -59,48 +65,78 @@ class List extends React.Component {
         const category = useRef(null);
         const state_type = useRef(null);
         const damaged = useRef(null);
-        const changeUsername = useRef(null);
         
         const SelectData = (props) => {
             const data = [];
-            const setnul = (
-                <option value="" >
-
-                </option> 
-            )
             const change = (columntoshow) => (
                 <option value={columntoshow}>
                     {columntoshow}
                 </option>
-            )
+            );
+
             GetData(props.url).map((val, idx) => (
                 data.push(val[props.dataToShow])
-            ))
+            ));
+
             return(
                 <>
-                    <select className="addElementTable" url={props.url} name={props.dataToShow} ref={props.innerRef} columntoshow = {props.columntoshow}>
-                    { (props.columntoshow !== undefined || props.columntoshow !== "" )? 
-                        change(props.columntoshow)
-                    :
-                        undefined
-                    }
-                    {props.url === "places" || props.url === "users" ? setnul : undefined}
-                    {
-                    data.map((val, idx) => (
-                            <option key={idx} value={val} > 
+                    <select className="addElementTable" name={props.dataToShow} ref={props.innerRef} columntoshow = {props.columntoshow}>
+                        { 
+                            (props.columntoshow !== undefined || props.columntoshow !== null ) ? 
+                                change(props.columntoshow) 
+                                : null
+                        }
+
+                        { data.map((val, idx) => (
+                            val != "" && val != props.columntoshow ?
+
+                            <option key={idx} value={val}>  
                                 {val} 
                             </option>  
-                    ))
-                    }
+
+                            : null
+                        ))}
+
+                        { props.url === "places" || props.url === "users" ? 
+                            <option value=""></option> 
+                            : undefined }
                     </select>  
                 </>
             );
         }
+
+        const submitPost = async (e) => {
+            e.preventDefault();
+            if(amount.current.value != null && name.current.value != null && inventory_number.current.value != null)
+            {
+                await Axios.post("http://localhost:3002/api/create", {
+                    lab_id: lab_id.current.value,
+                    amount: amount.current.value,
+                    place_id: place.current.value,
+                    name: name.current.value,
+                    inventory_number: inventory_number.current.value,
+                    user_id: user_name.current.value,
+                    category_id: category.current.value,
+                    state_type: state_type.current.value,
+                    damaged: damaged.current.value,
+                }).then(res => {
+                    console.log(res.status);
+                    console.log(res.data);
+                }).catch(err => {
+                    console.log(err);
+                });
+
+                // window.location.reload(false);
+                console.log("Wysłano");
+            }else{
+                alert("Wprowadzono błędne dane!");
+            }
+        };
     
         const tableData = (
             <tr id="insertDataRow">
                 <td>
-                    <SelectData url="labs" dataToShow="id" innerRef={lab_id}  />
+                    <SelectData url="labs" dataToShow="id" innerRef={lab_id} />
                 </td>
                 <td>
                     <div className="inp-box">
@@ -133,13 +169,10 @@ class List extends React.Component {
                     <SelectData url="users" dataToShow="username" innerRef={user_name} />
                 </td>
                 <td>
-                    <select className="addElementTable" name="rodzajsprzetu" ref={category} >
-                        <option value="elektronika">Elektronika</option>
-                        <option value="mebel">Mebel</option>
-                    </select>
+                    <SelectData url="categories" dataToShow="category_name" innerRef={category} />
                 </td>
                 <td>
-                    <select className="addElementTable" name="typsprzetu" ref={state_type} >
+                    <select className="addElementTable" name="rodzajsprzetu" ref={state_type} >
                         <option value="Stanowy">Stanowy</option>
                         <option value="Bezstanowy">Bezstanowy</option>
                     </select>
@@ -150,65 +183,68 @@ class List extends React.Component {
                         <option value="Nie">Nie</option>
                     </select>
                 </td>
+                <td>
+                    <button onClick={submitPost}>Dodaj</button>
+                </td>
             </tr>
         );
+
         const submitUpdatePost = async (id, username) => {
 
-            // await Axios.post("http://localhost:3002/api/update", {
-            //     username: changeUsername.current.value,
-            //     id: idToChange.current.value
-            // }).then(res => {
-            //     console.log(res.status);
-            //     console.log(res.data);
-            // }).catch(err => {
-            //     console.log(err);
-            // });
+            Axios.post("http://localhost:3002/api/update", {
+                username: username,
+                id: id
+            }).then(res => {
+                console.log(res.status);
+                console.log(res.data);
+            }).catch(err => {
+                console.log(err);
+            });
+
             console.log(id+" "+username);
-        }
-        
-        const submitPost = async (e) => {
-            e.preventDefault();
-            if(amount.current.value === !null && name.current.value === !null && inventory_number.current.value === !null)
-            {
-                await Axios.post("http://localhost:3002/api/create", {
-                    lab_id: lab_id.current.value,
-                    amount: amount.current.value,
-                    place_id: place.current.value,
-                    name: name.current.value,
-                    inventory_number: inventory_number.current.value,
-                    user_id: user_name.current.value,
-                    category_id: category.current.value,
-                    state_type: state_type.current.value,
-                    damaged: damaged.current.value,
-                }).then(res => {
-                    console.log(res.status);
-                    console.log(res.data);
-                }).catch(err => {
-                    console.log(err);
-                });
-        
-                window.location.reload(false);
-                console.log("Wysłano");
-        }else{
-            alert("Dane które wprowadziłeś są złe sprawdź je i spróbuj ponownie!");
-        }
-        };
-    
-        const [isClicked, setIsClicked] = useState(false);
-    
-        const buttonHandler = () => {
-            setIsClicked(current => !current);
+
+            Axios.get(`http://localhost:3002/api/get/`).then((data) => {
+                setdata(data.data);
+            });
+            console.log(data);
         }
     
         const componentPDF = useRef();
         const SetupTableToExport = () => {
-            const root = componentPDF.current;
-            const copyOfRoot = root.cloneNode(true);
-            const rowToRemove = copyOfRoot.querySelector("#insertDataRow");
-            rowToRemove.remove();
+
+            const  table = document.createElement("table");
+            const thead = componentPDF.current.cloneNode(true).querySelector("thead");
+            const tbody = document.createElement("tbody");
+            table.classList.add("fl-table");
+            thead.querySelector("tr th:last-of-type").remove(); // remove action column from thead
+
+            table.appendChild(thead);
+
+            for (let i = 0; i < data.length; i++) {
+                const row = tbody.insertRow();
+                const currData = data[i];
+
+                const currRowData = [
+                    currData["lab_id"],
+                    currData["amount"],
+                    currData["place"],
+                    currData["name"],
+                    currData["inventory_number"],
+                    currData["user_name"],
+                    currData["category"],
+                    currData["amount"],
+                    currData["damaged"] 
+                ];
+
+                for (const data of currRowData) {   
+                    row.insertCell().appendChild(document.createTextNode(data));
+                }
+            }   
+
+            table.appendChild(tbody);  
             
-            console.log(copyOfRoot);
-            return copyOfRoot;
+            console.log(table);
+            return table;
         }
         
         const [order, setorder] = useState("ASC");
@@ -254,11 +290,15 @@ class List extends React.Component {
                     <td>{val.place}</td>
                     <td>{val.name}</td>
                     <td>{val.inventory_number}</td>
-                    <td><SelectData url = "users" dataToShow = "username" innerRef = {changeUsername} columntoshow = {val.user_name}/></td>
+                    <td>
+                        <SelectData url="users" dataToShow="username" innerRef = {userNameChange} columntoshow={val.user_name}/>
+                    </td>
                     <td>{val.category}</td>
                     <td>{val.state}</td>
                     <td>{val.damaged}</td>
-                    <td><button onClick={() => submitUpdatePost(val.id, changeUsername.current.value)}>zatwierdz zmiany</button> </td>
+                    <td>
+                        <button onClick={() => submitUpdatePost(val.id, userNameChange.current.value)}>zatwierdz zmiany</button> 
+                    </td>
                 </tr>  
             ));
         
@@ -272,16 +312,35 @@ class List extends React.Component {
                         <h2 className="brand-name">Wykaz ewidencyjny materiałów katedry informatyki</h2>
                     </div>
     
-                    <div className="sidebar-trigger" >
-                        <button onClick={buttonHandler} >
-                            <i className="fa-solid fa-bars"></i>
-                        </button>
+                    <div className="rightside-panel" >
+                        <h2>
+                            <i className="fa-solid fa-user"></i> 
+                            <span>
+                                {this.loggedAs}
+                            </span>
+                        </h2>
                     </div>
                 </nav>
-    
+            
+                <div className="function-tools">
+                    <div className="filter-box">
+                        <h3 className="navElementOpen">Filtr</h3>
+
+                        <div className="inp-box">
+                            <input className="inp-effect" id="Search" type="text" value={SearchValue} onChange={(e) => {setSearchValue(e.target.value)}}></input>
+                            <span className="focus-border">
+                                <i></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div className="export">
+                        <button className="navElementOpen" onClick={generatePDF}>Export PDF</button>
+                    </div>
+                </div>
+            
                 <section>
                     <div className="table-wrapper">
-                        <table className={"fl-table " + (isClicked ? "clicked" : "")} ref={componentPDF}>
+                        <table className="fl-table" ref={componentPDF}>
                             <thead>
                             <tr>
                                 <th onClick={() => sortHeader("lab_id", true)}>Nr laboranta</th>
@@ -293,6 +352,7 @@ class List extends React.Component {
                                 <th onClick={() => sortHeader("category")}>Rodzaj sprzętu</th>
                                 <th onClick={() => sortHeader("state")}>Typ sprzętu</th>
                                 <th onClick={() => sortHeader("damaged")}>Do wybrakowania</th>
+                                <th>Akcja</th>
                             </tr>
                             </thead>
                             
@@ -309,16 +369,6 @@ class List extends React.Component {
                             paginate={paginate}
                         />
                     </div>
-    
-                    <aside className={(isClicked ? "sidebarActive":"") + " sidebar"} >
-    
-                        <button className={isClicked ? "navElementOpen" : "navElementClosed"} onClick={submitPost}>Dodaj</button>
-                        <button className={isClicked ? "navElementOpen" : "navElementClosed"} onClick={generatePDF}>Export PDF</button>
-                        <h3 className={isClicked ? "navElementOpen" : "navElementClosed"}>Filtr</h3>
-                        <input className={isClicked ? "navElementOpen" : "navElementClosed"} id="Search" type="text" value={SearchValue} onChange={(e) => {setSearchValue(e.target.value)}}></input>
-                        <button className={isClicked ? "navElementOpen" : "navElementClosed"} onClick={submitUpdatePost}>wprowadz zmiane w wierszy</button>
-    
-                    </aside>
                 </section>
             </>
         );

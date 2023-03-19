@@ -51,17 +51,39 @@ nav .brand {
     margin: 0 1.5rem;
 }
 
-.sidebar-trigger {
+.rightside-panel {
     margin: .5em;
 }
 
-.sidebar-trigger button {
+.rightside-panel h2 {
     color: #ccc;
-    background-color: transparent;
-    font-size: 1.2em;
-    padding: 0.2em 0.4em;
-    border: 2px solid currentColor;
-    outline: none;
+}
+.rightside-panel h2 span {
+    padding-left: 0.3em;
+}
+
+.function-tools {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--primary);
+    color: var(--light);
+    box-shadow: 0px 5px 5px var(--accents), 0px -1px 3px var(--accents);
+    padding-bottom: 1.5em;
+}
+.function-tools div {
+    width: 50%;
+    padding: 1em;
+}
+.function-tools div.filter-box h3 {
+    padding-left: .2em;
+}
+.function-tools div.filter-box .inp-box {
+    padding: .2em;
+}
+.function-tools div.filter-box .inp-effect {
+    width: auto;
 }
 
 section {
@@ -73,16 +95,13 @@ section {
     transition: .5s;
 }
 
-.table-wrapper .fl-table.clicked {
-    width: 100%;
-}
-
 .fl-table {
     width: 100%;
     border-collapse: collapse;
     white-space: nowrap;
     background-color: white;
     transition: .5s;
+    border-bottom: 1px solid var(--primary);
 }
 
 .fl-table td, .fl-table th {
@@ -114,10 +133,6 @@ section {
 @media (max-width: 1080px) {
     section {
         justify-content: space-between;
-    }
-    .table-wrapper:has(.fl-table.clicked)  {
-        width: 80%;
-        margin: 0;
     }
     .fl-table {
         display: flex;

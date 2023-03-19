@@ -1,9 +1,10 @@
 .pagination-container {
     width: 100%;
-    overflow-x: auto;
 }
 .pagination-container .pagination-menu {
     display: flex;
+    flex-wrap: wrap;
+    gap: 1.2em 0;
     justify-content: left;
     align-items: center;
 }

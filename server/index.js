@@ -1,6 +1,8 @@
 import express from "express";
 import db from "./config/db.js";
 import cors from "cors";
+import crypto from "crypto";
+import { log } from "console";
 
 const app = express();
 const PORT = 3002;
@@ -45,6 +47,15 @@ app.get("/api/get/places", (req, res) => {
         res.send(result);
     });
 });
+app.get("/api/get/categories", (req, res) => {
+    const selectQuery = "SELECT `category_name` FROM `categories`";
+    db.query(selectQuery, (err, result) => {
+        if (err) {
+            console.log(err);
+        }
+        res.send(result);
+    });
+});
 
 // Route for creating the thing in progress
 app.post("/api/create", (req, res) => {
@@ -68,10 +79,13 @@ app.post("/api/create", (req, res) => {
         }
     );
 });
-app.post("/api/update", (reg, res) => {
-    const username = reg.body.username;
-    db.query("UPDATE `inventory_list`(`user_name`) VALUES (?);",
-        [username],
+app.post("/api/update", (req, res) => {
+    const id = req.body.id;
+    const username = req.body.username;
+    console.log("UPDATE `inventory_list` SET `user_name` = " + username + " WHERE `id` = " + id + ";");
+    // db.query("UPDATE `inventory_list` SET `user_name`= ? WHERE `id` = ?;",
+    db.query("UPDATE `inventory_list` SET `user_name`= '" + username + "' WHERE `id` = " + id + ";",
+        [username, id],
         (err, result) => {
             if (err) {
                 console.log(err);
@@ -79,6 +93,28 @@ app.post("/api/update", (reg, res) => {
             console.log(result);
         }
     );
+});
+
+const encrypt = (content) => {
+    return crypto.createHash('sha3-256').update(content).digest("base64");
+}
+
+app.post("/login", (req, res) => {
+    const username = req.body.username;
+    const password = encrypt(req.body.password);
+    console.log(password);
+
+    db.query("SELECT * FROM `logins` WHERE username = ? AND password = ?;", [username, password], (err, queryRes) => {
+        if(err) {
+            req.setEncoding({err: err});
+        } else {
+            if(queryRes.length > 0){
+                res.send(queryRes);
+            }else{
+                res.send({message: "Podane dane są nieprawidłowe!"})
+            }
+        }
+    });
 });
 
 // Route to delete a thing in progress
