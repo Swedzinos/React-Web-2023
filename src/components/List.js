@@ -19,6 +19,7 @@ class List extends React.Component {
         const indexOfLastPost = currentPage * postsPerPage;
         const indexOfFirstPost = indexOfLastPost - postsPerPage;
         let currentData = data.slice(indexOfFirstPost, indexOfLastPost);
+        const paginate = pageNumber => setCurrentPage(pageNumber);
         const userNameChange = useRef(null);
 
         useEffect(() => {
@@ -36,20 +37,21 @@ class List extends React.Component {
             Axios.delete(`http://localhost:3002/delete/${id}`).then(res => {
                 alert(res.data.message);
             }).catch(err => {
+                alert("Błąd");
                 console.log(err);
             });
         }
     
         const showDataSearch = () => {
-            
-            const showSearchData = filteredData.slice(indexOfFirstPost, indexOfLastPost).map((val) => (
-                <tr key={val.id}>
+            const showSearchData = filteredData.slice(indexOfFirstPost, indexOfLastPost).map((val) => {
+                return (
+                <tr key={val.id} id={val.id}>
                     <td>{val.lab_id}</td>
                     <td>{val.amount}</td>
                     <td>{val.place}</td>
                     <td>{val.name}</td>
                     <td>{val.inventory_number}</td>
-                    <td>
+                    <td className="select-cell">
                         <SelectData url="users" dataToShow="username" innerRef = {userNameChange} columntoshow={val.user_name}/>
                     </td>
                     <td>{val.category}</td>
@@ -60,8 +62,8 @@ class List extends React.Component {
                         <button onClick={() => deleteHandler(val.id)}>Usun</button> 
                     </td>
                 </tr>  
-            ));
-
+            )});
+            
             return showSearchData;
         }
         const lab_id = useRef(null);
@@ -86,7 +88,7 @@ class List extends React.Component {
                 data.push(val[props.dataToShow])
             ));
 
-            return(
+            return (
                 <>
                     <select className="addElementTable" name={props.dataToShow} ref={props.innerRef} columntoshow = {props.columntoshow}>
                         { 
@@ -127,14 +129,11 @@ class List extends React.Component {
                     state_type: state_type.current.value,
                     damaged: damaged.current.value,
                 }).then(res => {
-                    console.log(res.status);
-                    console.log(res.data);
+                    alert(res.data.message);
                 }).catch(err => {
+                    alert("Błąd");
                     console.log(err);
                 })
-
-                // window.location.reload(false);
-                console.log("Wysłano");
             }else{
                 alert("Wprowadzono błędne dane!");
             }
@@ -197,29 +196,26 @@ class List extends React.Component {
         );
 
         const submitUpdatePost = async (id) => {
+            let username = "";
+            const row = document.getElementById(id);
+            username = row.querySelector(".select-cell select").value;
+
 
             Axios.post("http://localhost:3002/api/update", {
-                username: userNameChange.current.value,
+                username: username,
                 id: id
             }).then(res => {
-                console.log(res.status);
-                console.log(res.data);
+                alert(res.data.message);
             }).catch(err => {
+                alert("Błąd!");
                 console.log(err);
             });
-
-            console.log(id+" "+userNameChange.current.value);
-            
-            Axios.get(`http://localhost:3002/api/get/`).then((data) => {
-                setdata(data.data);
-            });
-            console.log(data);
         }
     
         const componentPDF = useRef();
         const SetupTableToExport = () => {
 
-            const  table = document.createElement("table");
+            const table = document.createElement("table");
             const thead = componentPDF.current.cloneNode(true).querySelector("thead");
             const tbody = document.createElement("tbody");
             table.classList.add("fl-table");
@@ -249,8 +245,6 @@ class List extends React.Component {
             }   
 
             table.appendChild(tbody);  
-            
-            console.log(table);
             return table;
         }
         
@@ -258,17 +252,16 @@ class List extends React.Component {
        
         const generatePDF = useReactToPrint({
             content: () => SetupTableToExport(),
-            documentTitle: "Inventory raport",
-            onAfterPrint: () => console.log("")
+            documentTitle: "Inventory raport"
         });
 
-        const sortHeader = (column, isNumber=false) =>{
+        const sortHeader = (column, isNumber=false) => {
             let sorted = "";
             if(order === "ASC"){ 
                 if(isNumber) {
                     sorted = data.sort((a,b) => a[column] > b[column] ? 1 : -1);
                 } else {
-                    sorted = data.sort((a,b) => a[column].toString().toLowerCase() > b[column].toString().toLowerCase() ? 1 : -1);
+                    sorted = data.sort((a,b) => (a[column] == null ? "" : a[column].toString().toLowerCase()) > (b[column] == null ? "" : b[column].toString().toLowerCase()) ? 1 : -1);
                 }
                 
                 setorder("DESC");
@@ -277,7 +270,7 @@ class List extends React.Component {
                 if(isNumber) {
                     sorted = data.sort((a,b) => a[column] < b[column] ? 1 : -1);
                 } else {
-                    sorted = data.sort((a,b) => a[column].toString().toLowerCase() < b[column].toString().toLowerCase() ? 1 : -1);
+                    sorted = data.sort((a,b) => (a[column] == null ? "" : a[column].toString().toLowerCase()) < (b[column] == null ? "" : b[column].toString().toLowerCase()) ? 1 : -1);
                 }
 
                 setorder("ASC");
@@ -287,18 +280,16 @@ class List extends React.Component {
             paginate(1)
         };
         
-        const paginate = pageNumber => setCurrentPage(pageNumber);
-        
         const showData =
             currentData.map((val) => (
-                <tr key={val.id}>
+                <tr key={val.id} id={val.id}>
                     <td>{val.lab_id}</td>
                     <td>{val.amount}</td>
                     <td>{val.place}</td>
                     <td>{val.name}</td>
                     <td>{val.inventory_number}</td>
-                    <td>
-                        <SelectData url="users" dataToShow="username" innerRef = {userNameChange.current} columntoshow={val.user_name}/>
+                    <td className="select-cell">
+                        <SelectData url="users" dataToShow="username" innerRef={userNameChange} columntoshow={val.user_name}/>
                     </td>
                     <td>{val.category}</td>
                     <td>{val.state}</td>
@@ -334,7 +325,7 @@ class List extends React.Component {
                         <h3 className="navElementOpen">Filtr</h3>
 
                         <div className="inp-box">
-                            <input className="inp-effect" id="Search" type="text" value={SearchValue} onChange={(e) => {setSearchValue(e.target.value)}}></input>
+                            <input className="inp-effect" id="Search" type="text" value={SearchValue} onChange={(e) => { setSearchValue(e.target.value) }} onKeyUp={() => paginate(1)} />
                             <span className="focus-border">
                                 <i></i>
                             </span>
@@ -350,11 +341,11 @@ class List extends React.Component {
                         <table className="fl-table" ref={componentPDF}>
                             <thead>
                             <tr>
-                                <th onClick={() => sortHeader("lab_id", true)}>Nr laboranta</th>
+                                <th onClick={() => sortHeader("lab_id", true)}>Nr. laboranta</th>
                                 <th onClick={() => sortHeader("amount", true)}>Ilość</th>
-                                <th onClick={() => sortHeader("place")}>place</th>
+                                <th onClick={() => sortHeader("place")}>Miejsce</th>
                                 <th onClick={() => sortHeader("name")}>Nazwa sprzętu</th>
-                                <th onClick={() => sortHeader("inventory_number")}>Nr inw.</th>
+                                <th onClick={() => sortHeader("inventory_number")}>Nr. inw.</th>
                                 <th onClick={() => sortHeader("user_name")}>Użytkownik</th>
                                 <th onClick={() => sortHeader("category")}>Rodzaj sprzętu</th>
                                 <th onClick={() => sortHeader("state")}>Typ sprzętu</th>
@@ -365,7 +356,7 @@ class List extends React.Component {
                             
                             <tbody>
                                 {tableData}
-                                { SearchValue === "undefined" || SearchValue === ""  ? showData : showDataSearch() }
+                                { SearchValue === undefined || SearchValue === ""  ? showData : showDataSearch() }
                             </tbody>
                         </table>
     

@@ -60,31 +60,32 @@ app.get("/api/get/categories", (req, res) => {
 app.post("/api/create", (req, res) => {
     const lab_id = req.body.lab_id;
     const amount = req.body.amount;
-    let place_id = req.body.place_id;
     const name = req.body.name;
     const inventory_number = req.body.inventory_number;
-    let user_id = req.body.user_id;
-    const category_id = req.body.category_id;
-    let state_type = req.body.state_type;
+    const state_type = req.body.state_type;
     const damaged = req.body.damaged;
-    if(place_id == ''){
+    let place_id = req.body.place_id;
+    let user_id = req.body.user_id;
+    let category_id = req.body.category_id;
+    if(place_id == ""){
         place_id = null;
     }
-    if(user_id == ''){
+    if(user_id == ""){
         user_id = null;
     }
-    if(state_type == ''){
-        state_type = null;
+    if(category_id == ""){
+        category_id = null;
     }
-    console.log(place_id);
+
 
     db.query("INSERT INTO `inventory_list`(`lab_id`, `user_name`, `place`, `category`, `amount`, `name`, `inventory_number`, `state`, `damaged`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
         [lab_id, user_id, place_id, category_id, amount, name, inventory_number, state_type, damaged],
-        (err, result) => {
+        (err, queryRes) => {
             if (err) {
+                res.send({message: "Nieprawidłowe dane!"});
                 console.log(err);
             }
-            console.log(result);
+            res.send({message: "Dodano"});
         }
     );
 });
@@ -93,19 +94,25 @@ app.post("/api/create", (req, res) => {
 app.post("/api/update", (req, res) => {
     const id = req.body.id;
     let username = req.body.username;
-    if(username == ''){
+    if(username == ""){
         username = null;
     }
 
-    console.log("UPDATE `inventory_list` SET `user_name` = " + username + " WHERE `id` = "+ id + ";");
-    // db.query("UPDATE `inventory_list` SET `user_name`= ? WHERE `id` = ?;",
     db.query("UPDATE `inventory_list` SET `user_name`= '" + username + "' WHERE `id` =  "+ id +" ;",
         [username, id],
-        (err, result) => {
+        (err, queryRes) => {
             if (err) {
+                res.send(err.message);
                 console.log(err);
             }
-            console.log(result);
+
+            if(queryRes.changedRows > 0){
+                res.send({message: "Dane zmieniono pomyślnie"});
+            }else{
+                res.send({message: "Zmień dane aby zatwierdzić zmiany"});
+            }
+
+            console.log(queryRes);
         }
     );
 });
@@ -121,12 +128,12 @@ app.post("/login", (req, res) => {
     db.query("SELECT * FROM `logins` WHERE username = ? AND password = ?;", [username, password], (err, queryRes) => {
         if(err) {
             req.setEncoding({err: err});
-        } else {
-            if(queryRes.length > 0){
-                res.send(queryRes);
-            }else{
-                res.send({message: "Podane dane są nieprawidłowe!"})
-            }
+        }
+
+        if(queryRes.length > 0){
+            res.send(queryRes);
+        }else{
+            res.send({message: "Podane dane są nieprawidłowe!"})
         }
     });
 });
@@ -138,13 +145,14 @@ app.delete("/delete/:id", (req, res) => {
         if(err) {
             console.log(err);
             res.send(err);
+        } 
+        
+        if(queryRes.affectedRows <= 0){
+            res.send({message: "Cos poszlo nie tak!"})
         } else {
-            if(queryRes.length <= 0){
-                res.send({message: "Cos poszlo nie tak!"})
-            } else {
-                res.send({message: "Usunięto!"})
-            }
+            res.send({message: "Usunięto"})
         }
+        console.log(queryRes);
     })
 })
 
