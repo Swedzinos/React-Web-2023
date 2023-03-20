@@ -67,13 +67,13 @@ app.post("/api/create", (req, res) => {
     let place_id = req.body.place_id;
     let user_id = req.body.user_id;
     let category_id = req.body.category_id;
-    if(place_id == ""){
+    if(place_id == "" ||place_id == undefined){
         place_id = null;
     }
-    if(user_id == ""){
+    if(user_id == "" || user_id == undefined){
         user_id = null;
     }
-    if(category_id == ""){
+    if(category_id == "" || category_id == undefined){
         category_id = null;
     }
 
@@ -94,12 +94,21 @@ app.post("/api/create", (req, res) => {
 app.post("/api/update", (req, res) => {
     const id = req.body.id;
     let username = req.body.username;
-    if(username == ""){
+    let place = req.body.place;
+    let category = req.body.category;
+    let queryupdate = "UPDATE `inventory_list` SET `user_name`= ?, `place`= ?, `category`= ? WHERE `id` =  "+ id +" ;";
+    if(username == 'null' || username == ""){
         username = null;
     }
+    if(place == 'null' || place == ""){
+        place = null;
+    }
+    if(category == 'null' || category == ""){
+        category = null;
+    }
 
-    db.query("UPDATE `inventory_list` SET `user_name`= '" + username + "' WHERE `id` =  "+ id +" ;",
-        [username, id],
+    db.query(queryupdate,
+        [username, place, category, id],
         (err, queryRes) => {
             if (err) {
                 res.send(err.message);

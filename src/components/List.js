@@ -21,7 +21,7 @@ class List extends React.Component {
         let currentData = data.slice(indexOfFirstPost, indexOfLastPost);
         const paginate = pageNumber => setCurrentPage(pageNumber);
         const userNameChange = useRef(null);
-
+        
         useEffect(() => {
             Axios.get(`http://localhost:3002/api/get/`).then((data) => {
                 setdata(data.data);
@@ -32,23 +32,33 @@ class List extends React.Component {
         const filteredData = data.filter((val) => {
             return Object.values(val).join('').toLowerCase().includes(SearchValue.toLowerCase())
         })
-
+        const update =()=>{
+            Axios.get(`http://localhost:3002/api/get/`).then((data) => {
+                setdata(data.data);
+            });
+        }
         const deleteHandler = (id) => {
             Axios.delete(`http://localhost:3002/delete/${id}`).then(res => {
                 alert(res.data.message);
+                Axios.get(`http://localhost:3002/api/get/`).then((data) => {
+                setdata(data.data);
+                });
             }).catch(err => {
                 alert("Błąd");
                 console.log(err);
             });
+            
         }
-    
+        
         const showDataSearch = () => {
             const showSearchData = filteredData.slice(indexOfFirstPost, indexOfLastPost).map((val) => {
                 return (
                 <tr key={val.id} id={val.id}>
                     <td>{val.lab_id}</td>
                     <td>{val.amount}</td>
-                    <td>{val.place}</td>
+                    <td className="select-cell-place">
+                            <SelectData url="places" dataToShow="name" innerRef={userNameChange} columntoshow={val.place}/>
+                    </td>
                     <td>{val.name}</td>
                     <td>{val.inventory_number}</td>
                     <td className="select-cell">
@@ -77,6 +87,7 @@ class List extends React.Component {
         const damaged = useRef(null);
         
         const SelectData = (props) => {
+            
             const data = [];
             const change = (columntoshow) => (
                 <option value={columntoshow}>
@@ -116,7 +127,7 @@ class List extends React.Component {
         }
 
         const submitPost = async () => {
-            if(amount.current.value != null && name.current.value != null && inventory_number.current.value != null)
+            if(amount.current.value != '' && name.current.value != '' && inventory_number.current.value != '')
             {
                 await Axios.post("http://localhost:3002/api/create", {
                     lab_id: lab_id.current.value,
@@ -130,13 +141,16 @@ class List extends React.Component {
                     damaged: damaged.current.value,
                 }).then(res => {
                     alert(res.data.message);
+                    Axios.get(`http://localhost:3002/api/get/`).then((data) => {
+                    setdata(data.data);
+                    });
                 }).catch(err => {
                     alert("Błąd");
                     console.log(err);
                 })
             }else{
                 alert("Wprowadzono błędne dane!");
-            }
+            };
         };
     
         const tableData = (
@@ -196,16 +210,22 @@ class List extends React.Component {
         );
 
         const submitUpdatePost = async (id) => {
-            let username = "";
+            // let username,place,category = "";
             const row = document.getElementById(id);
-            username = row.querySelector(".select-cell select").value;
-
+            let usernameToChange = row.querySelector(".select-cell-user select").value;
+            let placeToChange = row.querySelector(".select-cell-place select").value;
+            let categoryToChange = row.querySelector(".select-cell-category select").value;
 
             Axios.post("http://localhost:3002/api/update", {
-                username: username,
+                username: usernameToChange,
+                place: placeToChange,
+                category: categoryToChange,
                 id: id
             }).then(res => {
                 alert(res.data.message);
+                Axios.get(`http://localhost:3002/api/get/`).then((data) => {
+                    setdata(data.data);
+                });
             }).catch(err => {
                 alert("Błąd!");
                 console.log(err);
@@ -280,26 +300,35 @@ class List extends React.Component {
             paginate(1)
         };
         
-        const showData =
-            currentData.map((val) => (
-                <tr key={val.id} id={val.id}>
-                    <td>{val.lab_id}</td>
-                    <td>{val.amount}</td>
-                    <td>{val.place}</td>
-                    <td>{val.name}</td>
-                    <td>{val.inventory_number}</td>
-                    <td className="select-cell">
-                        <SelectData url="users" dataToShow="username" innerRef={userNameChange} columntoshow={val.user_name}/>
-                    </td>
-                    <td>{val.category}</td>
-                    <td>{val.state}</td>
-                    <td>{val.damaged}</td>
-                    <td>
-                        <button onClick={() => submitUpdatePost(val.id)}>zatwierdz zmiany</button> 
-                        <button onClick={() => deleteHandler(val.id)}>Usun</button> 
-                    </td>
-                </tr>  
-            ));
+        const showData = () =>{
+            return(
+                currentData.map((val) => (
+                    <tr key={val.id} id={val.id}>
+                        <td>{val.lab_id}</td>
+                        <td>{val.amount}</td>
+                        <td className="select-cell-place">
+                            <SelectData url="places" dataToShow="name" innerRef={userNameChange} columntoshow={val.place}/>
+                        </td>
+                        <td>{val.name}</td>
+                        <td>{val.inventory_number}</td>
+                        <td className="select-cell-user">
+                            <SelectData url="users" dataToShow="username" innerRef={userNameChange} columntoshow={val.user_name}/>
+                        </td>
+                        <td className="select-cell-category">
+                            <SelectData url="categories" dataToShow="category_name" innerRef={userNameChange} columntoshow={val.category}/>
+                        </td>
+                        <td>{val.state}</td>
+                        <td>{val.damaged}</td>
+                        <td>
+                            <button onClick={() => submitUpdatePost(val.id)}>zatwierdz zmiany</button> 
+                            <button onClick={() => deleteHandler(val.id)}>Usun</button> 
+                        </td>
+                    </tr>  
+                ))
+            );
+                
+        };
+        
         return (
             <>
                 <nav>
@@ -356,7 +385,7 @@ class List extends React.Component {
                             
                             <tbody>
                                 {tableData}
-                                { SearchValue === undefined || SearchValue === ""  ? showData : showDataSearch() }
+                                { SearchValue === undefined || SearchValue === ""  ? showData() : showDataSearch() }
                             </tbody>
                         </table>
     
