@@ -20,7 +20,6 @@ class List extends React.Component {
         const indexOfFirstPost = indexOfLastPost - postsPerPage;
         let currentData = data.slice(indexOfFirstPost, indexOfLastPost);
         const paginate = pageNumber => setCurrentPage(pageNumber);
-        const userNameChange = useRef(null);
         
         useEffect(() => {
             Axios.get(`http://localhost:3002/api/get/`).then((data) => {
@@ -57,18 +56,20 @@ class List extends React.Component {
                     <td>{val.lab_id}</td>
                     <td>{val.amount}</td>
                     <td className="select-cell-place">
-                            <SelectData url="places" dataToShow="name" innerRef={userNameChange} columntoshow={val.place}/>
+                            <SelectData url="places" dataToShow="name" columntoshow={val.place}/>
                     </td>
                     <td>{val.name}</td>
                     <td>{val.inventory_number}</td>
                     <td className="select-cell">
-                        <SelectData url="users" dataToShow="username" innerRef = {userNameChange} columntoshow={val.user_name}/>
+                        <SelectData url="users" dataToShow="username" columntoshow={val.user_name}/>
                     </td>
-                    <td>{val.category}</td>
+                    <td className="select-cell-category">
+                            <SelectData url="categories" dataToShow="category_name" columntoshow={val.category}/>
+                    </td>
                     <td>{val.state}</td>
                     <td>{val.damaged}</td>
                     <td>
-                        <button onClick={() => submitUpdatePost(val.id, userNameChange.current.value)}>zatwierdz zmiany</button> 
+                        <button onClick={() => submitUpdatePost(val.id)}>zatwierdz zmiany</button> 
                         <button onClick={() => deleteHandler(val.id)}>Usun</button> 
                     </td>
                 </tr>  
@@ -307,15 +308,15 @@ class List extends React.Component {
                         <td>{val.lab_id}</td>
                         <td>{val.amount}</td>
                         <td className="select-cell-place">
-                            <SelectData url="places" dataToShow="name" innerRef={userNameChange} columntoshow={val.place}/>
+                            <SelectData url="places" dataToShow="name" columntoshow={val.place}/>
                         </td>
                         <td>{val.name}</td>
                         <td>{val.inventory_number}</td>
                         <td className="select-cell-user">
-                            <SelectData url="users" dataToShow="username" innerRef={userNameChange} columntoshow={val.user_name}/>
+                            <SelectData url="users" dataToShow="username" columntoshow={val.user_name}/>
                         </td>
                         <td className="select-cell-category">
-                            <SelectData url="categories" dataToShow="category_name" innerRef={userNameChange} columntoshow={val.category}/>
+                            <SelectData url="categories" dataToShow="category_name" columntoshow={val.category}/>
                         </td>
                         <td>{val.state}</td>
                         <td>{val.damaged}</td>
