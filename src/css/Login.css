@@ -4,29 +4,38 @@
     --theme-dark: #212121;
     
 }
+
 body {
     min-height: 100vh;
     
 }
-.left-logo{
-    display: block;
-    margin-top: 25%;
-    margin-left: auto;
-    margin-right: auto;
-}
-.bottomlayer{
-    display: block;
-    width: auto;
-    height: 0%;
-}
+
 .backLeft {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1em;
     position: absolute;
     left: 0;
     width: 50%;
     height: 100%;
     background: var(--theme-login);
 }
-  
+
+.backLeft img {
+    width: 60%;
+}
+
+.content-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 4em auto 1em auto;
+}
+.content-footer img {
+    width: 80%;
+}
+
 .back {
     width: 100%;
     height: 100%;
@@ -173,7 +182,13 @@ input.login:focus, input.login:active, input.login:hover {
 
 @media only screen and (max-width: 768px) {
     .slideBox {
-      width: 80%;
-      margin-left: 20%;
+        width: 80%;
+        margin-left: 20%;
+    }
+    .back img { 
+        display: none; 
+    }
+    .content-footer img {
+        width: 95%;
     }
 }

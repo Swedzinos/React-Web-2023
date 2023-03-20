@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Axios from "axios";
 import List from "./List.js";
-import logoleft from "../images/logogood.png";
-import logoright from "../images/anotherlogo.png";
+import logoleft from "../images/login-logo.png";
+import logoright from "../images/footer-logo.png";
 import "../css/Login.css";
 
 const Login = () => {
@@ -33,7 +33,9 @@ const Login = () => {
             ) : (
                 <section>
                     <div className="back">
-                        <div className="backLeft"><img src={logoleft} className = "left-logo" alt="logo right" width="60%" height="50%"></img></div>
+                        <div className="backLeft">
+                            <img src={logoleft} className="logo" alt="Wykaz Ewidencyjny Materiałów katedry informatyki." />
+                        </div>
                     </div>
 
                     <div className="slideBox">
@@ -55,8 +57,8 @@ const Login = () => {
                                             <input type="submit" value="Zaloguj" name="login" className="login" onClick={loginHandler} />
                                         </div>
                                     </form>
-                                    <div className="bottomLayer">
-                                    <img src={logoright} className = "left-logo" alt="logo left" width="60%" height="50%"></img>
+                                    <div className="content-footer">
+                                        <img src={logoright} className="logo" alt="Akademia Marynarki Wojennej im. Bohaterów Westerplatte" />
                                     </div>
                                 </div>
                             </div>

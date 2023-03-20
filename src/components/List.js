@@ -143,7 +143,7 @@ class List extends React.Component {
                 }).then(res => {
                     alert(res.data.message);
                     Axios.get(`http://localhost:3002/api/get/`).then((data) => {
-                    setdata(data.data);
+                        setdata(data.data);
                     });
                 }).catch(err => {
                     alert("Błąd");
