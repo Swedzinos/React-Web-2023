@@ -103,6 +103,26 @@ section {
     transition: .5s;
 }
 
+button.func-btn {
+    margin: auto .5em;
+    padding: .2em .4em;
+    background-color: var(--primary);
+    color: var(--light);
+    border: 1px solid currentColor;
+    transition: .3s;
+    cursor: pointer;
+}
+button.func-btn i {
+    padding: .2em .3em;
+    font-size: 1.2em;
+}
+button.func-btn:hover, button.func-btn:hover i {
+    background-color: var(--light);
+    color: var(--primary);
+}
+button.func-btn:first-of-type { margin-left: 0; }
+button.func-btn:last-of-type { margin-right: 0; }
+
 .fl-table {
     width: 100%;
     border-collapse: collapse;
@@ -111,25 +131,6 @@ section {
     transition: .5s;
     border-bottom: 1px solid var(--primary);
 }
-
-button.func-btn {
-    margin: auto .5em;
-    padding: .2em .4em;
-    background-color: transparent;
-    color: var(--primary);
-    border: 1px solid currentColor;
-    transition: .15s;
-    cursor: pointer;
-}
-button.func-btn:hover {
-    color: var(--accents);
-}
-button.func-btn i {
-    padding: .2em .3em;
-    font-size: 1.2em;
-}
-button.func-btn:first-of-type { margin-left: 0; }
-button.func-btn:last-of-type { margin-right: 0; }
 
 .fl-table td, .fl-table th {
     text-align: center;
@@ -153,46 +154,6 @@ button.func-btn:last-of-type { margin-right: 0; }
 
 .fl-table tr:nth-child(even) {
     background-color: var(--light);
-}
-
-footer {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    width: 100%;
-    margin: 3em auto;
-    padding: 2em;
-    background-color: var(--primary);
-    color: var(--light);
-    font-size: 0.9em;
-}
-footer .brand-logo {
-    width: 35%;
-    max-width: 300px;
-}
-footer .info {
-    display: flex;
-    flex-direction: column;
-    align-items: end;
-}
-footer .info div {
-    margin: 1em 0;
-}
-footer .info .export button {
-    padding: 1em 1.5em;
-    border-width: 2px;
-    font-size: 1.1em;
-    font-weight: bold;
-    color: var(--light);
-}
-footer .info .export 
-footer .info p a {
-    padding: 0 .3em;
-    color: var(--accents);
-    transition: .2s;
-}
-footer .info p a:hover {
-    color: #aaa;
 }
 
 

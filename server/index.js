@@ -165,6 +165,108 @@ app.delete("/delete/:id", (req, res) => {
     })
 })
 
+app.post("/api/create/places", (req, res) => {
+    const colName = req.body.colName;
+
+    db.query("INSERT INTO `places`(`name`) VALUES (?) ON DUPLICATE KEY UPDATE `name` = ?;",
+        [colName, colName],
+        (err, queryRes) => {
+            if (err) {
+                res.send({message: "Nieprawidłowe dane!"});
+                console.log(err.sqlMessage);
+            }
+            res.send({message: "Dodano"});
+        }
+    );
+});
+
+app.post("/api/create/users", (req, res) => {
+    const colName = req.body.colName;
+
+    db.query("INSERT INTO `users`(`username`) VALUES (?) ON DUPLICATE KEY UPDATE `username` = ?;",
+        [colName, colName],
+        (err, queryRes) => {
+            if (err) {
+                res.send({message: "Nieprawidłowe dane!"});
+                console.log(err.sqlMessage);
+            }
+            res.send({message: "Dodano"});
+        }
+    );
+});
+
+app.post("/api/create/categories", (req, res) => {
+    const colName = req.body.colName;
+
+    db.query("INSERT INTO `categories`(`category_name`) VALUES (?) ON DUPLICATE KEY UPDATE `category_name` = ?;",
+        [colName, colName],
+        (err, queryRes) => {
+            if (err) {
+                res.send({message: "Nieprawidłowe dane!"});
+                console.log(err.sqlMessage);
+            }
+            res.send({message: "Dodano"});
+        }
+    );
+});
+
+app.delete("/delete/places/:colName", (req, res) => {
+    const colName = req.params.colName;
+    console.log(colName);
+   
+    db.query("DELETE FROM `places` WHERE `name` = ?;", [colName], (err, queryRes) => {
+        if(err) {
+            console.log(err);
+            res.send(err);
+        } 
+        
+        if(queryRes.affectedRows <= 0){
+            res.send({message: "Brak pasujących danych!"})
+        } else {
+            res.send({message: "Usunięto"})
+        }
+        console.log(queryRes);
+    })
+});
+
+app.delete("/delete/users/:colName", (req, res) => {
+    const colName = req.params.colName;
+    console.log(colName);
+   
+    db.query("DELETE FROM `users` WHERE `username` = ?;", [colName], (err, queryRes) => {
+        if(err) {
+            console.log(err);
+            res.send(err);
+        } 
+        
+        if(queryRes.affectedRows <= 0){
+            res.send({message: "Brak pasujących danych!"})
+        } else {
+            res.send({message: "Usunięto"})
+        }
+        console.log(queryRes);
+    })
+});
+
+app.delete("/delete/categories/:colName", (req, res) => {
+    const colName = req.params.colName;
+    console.log(colName);
+   
+    db.query("DELETE FROM `categories` WHERE `category_name` = ?;", [colName], (err, queryRes) => {
+        if(err) {
+            console.log(err);
+            res.send(err);
+        } 
+        
+        if(queryRes.affectedRows <= 0){
+            res.send({message: "Brak pasujących danych!"})
+        } else {
+            res.send({message: "Usunięto"})
+        }
+        console.log(queryRes);
+    })
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on ${PORT}`);
 });

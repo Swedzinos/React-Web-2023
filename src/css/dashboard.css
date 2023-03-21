@@ -1,0 +1,89 @@
+@import url("./footer.css");
+
+body {
+    min-height: 100vh;
+}
+section.dashboard-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 2em;
+    margin: auto 3em;
+}
+.dashboard-container .crud-container {
+    width: 50%;
+    min-width: 400px;
+    margin: 0 auto;
+}
+
+.crud-container h2 {
+    padding-bottom: .4em;
+    border-bottom: 1px solid currentColor;
+}
+
+.crud-container .data-management {
+    display: flex;
+    justify-content: space-between;
+}
+.data-management .data-view {
+    width: 40%;
+    min-width: 200px;
+    margin-right: 2em;
+}
+.crud-container .data-management .fl-table th,
+.crud-container .data-management .fl-table td {
+    border: 1px solid var(--primary) !important;
+}
+.crud-container .data-management .fl-table td {
+    font-size: 0.9em;
+    font-weight: normal;
+}
+.data-management .form-container form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.data-management .form-container form .inp-box {
+    width: 100%;
+}
+.action-btns-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 1em;
+}
+.action-btns-container button {
+    padding: .2em 1em;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+/* Responsive */
+@media (max-width: 1080px) {
+    .data-management .fl-table {
+        display: table;;
+    }
+    .data-management .fl-table thead,
+    .data-management .fl-table thead th {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1em;
+    }
+    .data-management .fl-table tbody {
+        display: flex;
+        flex-direction: column;
+        overflow-x: auto;
+    }
+    .data-management .fl-table th, 
+    .data-management .fl-table td {
+        padding: .25em;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+    .data-management .fl-table tr {
+        display: table-cell;
+        width: 100%;
+    }
+}

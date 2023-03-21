@@ -3,6 +3,7 @@ import Axios from "axios";
 import GetData from "./GetData.js";
 import logo from "../images/main-logo.png";
 import { useReactToPrint } from "react-to-print";
+import Dashboard from "./Dashboard.js";
 import Pagination from "./Pagination.js";
 import "../css/List.css";
 class List extends React.Component {
@@ -31,11 +32,7 @@ class List extends React.Component {
         const filteredData = data.filter((val) => {
             return Object.values(val).join('').toLowerCase().includes(SearchValue.toLowerCase())
         })
-        const update =()=>{
-            Axios.get(`http://localhost:3002/api/get/`).then((data) => {
-                setdata(data.data);
-            });
-        }
+
         const deleteHandler = (id) => {
             Axios.delete(`http://localhost:3002/delete/${id}`).then(res => {
                 alert(res.data.message);
@@ -113,7 +110,7 @@ class List extends React.Component {
                         }
 
                         { data.map((val, idx) => (
-                            val != "" && val != props.columntoshow ?
+                            val !== "" && val !== props.columntoshow ?
 
                             <option key={idx} value={val}>  
                                 {val} 
@@ -131,7 +128,7 @@ class List extends React.Component {
         }
 
         const submitPost = async () => {
-            if(amount.current.value != '' && name.current.value != '' && inventory_number.current.value != '')
+            if(amount.current.value !== "" && name.current.value !== "" && inventory_number.current.value !== "")
             {
                 await Axios.post("http://localhost:3002/api/create", {
                     lab_id: lab_id.current.value,
@@ -148,6 +145,9 @@ class List extends React.Component {
                     Axios.get(`http://localhost:3002/api/get/`).then((data) => {
                         setdata(data.data);
                     });
+                    amount.current.value = "";
+                    name.current.value = "";
+                    inventory_number.current.value = "";
                 }).catch(err => {
                     alert("Błąd");
                     console.log(err);
@@ -218,7 +218,7 @@ class List extends React.Component {
         const submitUpdatePost = async (id) => {
             // let username,place,category = "";
             const row = document.getElementById(id);
-            let usernameToChange = row.querySelector(".select-cell-user select").value != "" ? row.querySelector(".select-cell-user select").value : null;
+            let usernameToChange = row.querySelector(".select-cell-user select").value !== "" ? row.querySelector(".select-cell-user select").value : null;
             let placeToChange = row.querySelector(".select-cell-place select").value;
             let categoryToChange = row.querySelector(".select-cell-category select").value;
 
@@ -326,10 +326,10 @@ class List extends React.Component {
                         <td>{val.state}</td>
                         <td>{val.damaged}</td>
                         <td>
-                            <button onClick={() => submitUpdatePost(val.id)} className="func-btn">
+                            <button className="func-btn" onClick={() => submitUpdatePost(val.id)}>
                                 <i className="fa-solid fa-pen-to-square"></i>
                             </button> 
-                            <button onClick={() => deleteHandler(val.id)} className="func-btn">
+                            <button className="func-btn" onClick={() => deleteHandler(val.id)}>
                                 <i className="fa-solid fa-trash"></i>    
                             </button> 
                         </td>
@@ -338,7 +338,9 @@ class List extends React.Component {
             );
                 
         };
-        
+
+        const [showDashboard, setShowDashboard] = useState(false);
+
         return (
             <>
                 <nav>
@@ -348,14 +350,18 @@ class List extends React.Component {
                         </div>
                     </div>
 
-                    <div className="filter-box">
-                        <div className="inp-box">
-                            <input className="inp-effect" id="Search" type="text" value={SearchValue} onChange={(e) => { setSearchValue(e.target.value) }} onKeyUp={() => paginate(1)} placeholder="Szukaj..." />
-                            <span className="focus-border">
-                                <i></i>
-                            </span>
-                        </div>
-                    </div>
+                    { showDashboard === false ?
+                        ( <div className="filter-box">
+                            <div className="inp-box">
+                                <input className="inp-effect" id="Search" type="text" value={SearchValue} onChange={(e) => { setSearchValue(e.target.value) }} onKeyUp={() => paginate(1)} placeholder="Szukaj..." />
+                                <span className="focus-border">
+                                    <i></i>
+                                </span>
+                            </div>
+                        </div> )
+                        
+                        : null
+                }
 
                     <div className="rightside-panel" >
                         <h2>
@@ -367,38 +373,43 @@ class List extends React.Component {
                     </div>
                 </nav>
             
-                <section>
-                    <div className="table-wrapper">
-                        <table className="fl-table" ref={componentPDF}>
-                            <thead>
-                            <tr>
-                                <th onClick={() => sortHeader("lab_id", true)}>Nr. laboranta</th>
-                                <th onClick={() => sortHeader("amount", true)}>Ilość</th>
-                                <th onClick={() => sortHeader("place")}>Miejsce</th>
-                                <th onClick={() => sortHeader("name")}>Nazwa sprzętu</th>
-                                <th onClick={() => sortHeader("inventory_number")}>Nr. inw.</th>
-                                <th onClick={() => sortHeader("user_name")}>Użytkownik</th>
-                                <th onClick={() => sortHeader("category")}>Rodzaj sprzętu</th>
-                                <th onClick={() => sortHeader("state")}>Typ sprzętu</th>
-                                <th onClick={() => sortHeader("damaged")}>Do wybrakowania</th>
-                                <th>Akcja</th>
-                            </tr>
-                            </thead>
-                            
-                            <tbody>
-                                {tableData}
-                                { SearchValue === undefined || SearchValue === ""  ? showData() : showDataSearch() }
-                            </tbody>
-                        </table>
-    
-                        <Pagination
-                            postsPerPage={postsPerPage}
-                            totalPosts={SearchValue ? filteredData.length : data.length}
-                            currentPage={currentPage}
-                            paginate={paginate}
-                        />
-                    </div>
-                </section>
+                { showDashboard === false ? // change to false after complete development
+                    ( <section>
+                        <div className="table-wrapper">
+                            <table className="fl-table" ref={componentPDF}>
+                                <thead>
+                                    <tr>
+                                        <th onClick={() => sortHeader("lab_id", true)}>Nr. laboranta</th>
+                                        <th onClick={() => sortHeader("amount", true)}>Ilość</th>
+                                        <th onClick={() => sortHeader("place")}>Miejsce</th>
+                                        <th onClick={() => sortHeader("name")}>Nazwa sprzętu</th>
+                                        <th onClick={() => sortHeader("inventory_number")}>Nr. inw.</th>
+                                        <th onClick={() => sortHeader("user_name")}>Użytkownik</th>
+                                        <th onClick={() => sortHeader("category")}>Rodzaj sprzętu</th>
+                                        <th onClick={() => sortHeader("state")}>Typ sprzętu</th>
+                                        <th onClick={() => sortHeader("damaged")}>Do wybrakowania</th>
+                                        <th>Akcja</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>
+                                    {tableData}
+                                    { SearchValue === undefined || SearchValue === ""  ? showData() : showDataSearch() }
+                                </tbody>
+                            </table>
+        
+                            <Pagination
+                                postsPerPage={postsPerPage}
+                                totalPosts={SearchValue ? filteredData.length : data.length}
+                                currentPage={currentPage}
+                                paginate={paginate}
+                            />
+                        </div>
+                    </section> ) 
+
+                    : <Dashboard />
+                }
+                
 
                 <footer>
                     <div className="brand-logo">
@@ -406,20 +417,31 @@ class List extends React.Component {
                     </div>
                     <div className="info">
                         <div className="export">
-                            <button onClick={generatePDF} className="func-btn">
-                                Exportuj do PDF
-                                <i className="fa-solid fa-download"></i>
-                            </button>
-                            <button className="func-btn">
-                                Panel zarządzania
-                                <i className="fa-solid fa-hammer"></i>
-                            </button>
+                            { showDashboard === false ?
+                                 (<>
+                                    <button onClick={generatePDF} className="func-btn">
+                                        Exportuj do PDF
+                                        <i className="fa-solid fa-download"></i>
+                                    </button>
+                                    <button onClick={() => setShowDashboard(true)} className="func-btn">
+                                        Panel zarządzania
+                                        <i className="fa-solid fa-hammer"></i>
+                                    </button>    
+                                </>)
+
+                                : (<> 
+                                    <button onClick={() => setShowDashboard(false)} className="func-btn">
+                                        Widok danych
+                                        <i className="fa-solid fa-table"></i>
+                                    </button> 
+                                </>)
+                            }
                         </div>
                         <div>
                             <p>
                                 Aplikacja inwentarzowa stworzona przez
-                                <a href="https://github.com/Wierzba13" target="_blank">Raula Wierzbińskiego</a> oraz 
-                                <a href="https://github.com/Swedzinos" target="_blank">Kamila Banka</a> 
+                                <a href="https://github.com/Wierzba13" target="_blank" rel="noreferrer" >Raula Wierzbińskiego</a> oraz 
+                                <a href="https://github.com/Swedzinos" target="_blank" rel="noreferrer" >Kamila Banka</a> 
                                 na potrzeby praktyki zawodowej odbytej w Akademii Marynarki Wojennej - 2023r. 
                             </p>
                         </div>
