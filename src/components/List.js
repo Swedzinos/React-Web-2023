@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Axios from "axios";
 import GetData from "./GetData.js";
-import logo from "../images/amw_logo.png";
+import logo from "../images/main-logo.png";
 import { useReactToPrint } from "react-to-print";
 import Pagination from "./Pagination.js";
 import "../css/List.css";
@@ -46,7 +46,6 @@ class List extends React.Component {
                 alert("Błąd");
                 console.log(err);
             });
-            
         }
         
         const showDataSearch = () => {
@@ -60,7 +59,7 @@ class List extends React.Component {
                     </td>
                     <td>{val.name}</td>
                     <td>{val.inventory_number}</td>
-                    <td className="select-cell">
+                    <td className="select-cell-user">
                         <SelectData url="users" dataToShow="username" columntoshow={val.user_name}/>
                     </td>
                     <td className="select-cell-category">
@@ -69,8 +68,12 @@ class List extends React.Component {
                     <td>{val.state}</td>
                     <td>{val.damaged}</td>
                     <td>
-                        <button onClick={() => submitUpdatePost(val.id)}>zatwierdz zmiany</button> 
-                        <button onClick={() => deleteHandler(val.id)}>Usun</button> 
+                        <button onClick={() => submitUpdatePost(val.id)} className="func-btn">
+                            <i className="fa-solid fa-pen-to-square"></i>
+                        </button> 
+                        <button onClick={() => deleteHandler(val.id)} className="func-btn">
+                            <i className="fa-solid fa-trash"></i>    
+                        </button> 
                     </td>
                 </tr>  
             )});
@@ -205,7 +208,9 @@ class List extends React.Component {
                     </select>
                 </td>
                 <td>
-                    <button onClick={submitPost}>Dodaj</button>
+                    <button onClick={submitPost} className="func-btn">
+                        <i className="fa-solid fa-square-plus"></i>
+                    </button>
                 </td>
             </tr>
         );
@@ -213,7 +218,7 @@ class List extends React.Component {
         const submitUpdatePost = async (id) => {
             // let username,place,category = "";
             const row = document.getElementById(id);
-            let usernameToChange = row.querySelector(".select-cell-user select").value;
+            let usernameToChange = row.querySelector(".select-cell-user select").value != "" ? row.querySelector(".select-cell-user select").value : null;
             let placeToChange = row.querySelector(".select-cell-place select").value;
             let categoryToChange = row.querySelector(".select-cell-category select").value;
 
@@ -321,8 +326,12 @@ class List extends React.Component {
                         <td>{val.state}</td>
                         <td>{val.damaged}</td>
                         <td>
-                            <button onClick={() => submitUpdatePost(val.id)}>zatwierdz zmiany</button> 
-                            <button onClick={() => deleteHandler(val.id)}>Usun</button> 
+                            <button onClick={() => submitUpdatePost(val.id)} className="func-btn">
+                                <i className="fa-solid fa-pen-to-square"></i>
+                            </button> 
+                            <button onClick={() => deleteHandler(val.id)} className="func-btn">
+                                <i className="fa-solid fa-trash"></i>    
+                            </button> 
                         </td>
                     </tr>  
                 ))
@@ -337,9 +346,17 @@ class List extends React.Component {
                         <div className="brand-logo">
                             <img src={logo} alt="Logo Akademii Marynarki Wojennej" />
                         </div>
-                        <h2 className="brand-name">Wykaz ewidencyjny materiałów katedry informatyki</h2>
                     </div>
-    
+
+                    <div className="filter-box">
+                        <div className="inp-box">
+                            <input className="inp-effect" id="Search" type="text" value={SearchValue} onChange={(e) => { setSearchValue(e.target.value) }} onKeyUp={() => paginate(1)} placeholder="Szukaj..." />
+                            <span className="focus-border">
+                                <i></i>
+                            </span>
+                        </div>
+                    </div>
+
                     <div className="rightside-panel" >
                         <h2>
                             <i className="fa-solid fa-user"></i> 
@@ -349,22 +366,6 @@ class List extends React.Component {
                         </h2>
                     </div>
                 </nav>
-            
-                <div className="function-tools">
-                    <div className="filter-box">
-                        <h3 className="navElementOpen">Filtr</h3>
-
-                        <div className="inp-box">
-                            <input className="inp-effect" id="Search" type="text" value={SearchValue} onChange={(e) => { setSearchValue(e.target.value) }} onKeyUp={() => paginate(1)} />
-                            <span className="focus-border">
-                                <i></i>
-                            </span>
-                        </div>
-                    </div>
-                    <div className="export">
-                        <button className="navElementOpen" onClick={generatePDF}>Export PDF</button>
-                    </div>
-                </div>
             
                 <section>
                     <div className="table-wrapper">
@@ -398,6 +399,32 @@ class List extends React.Component {
                         />
                     </div>
                 </section>
+
+                <footer>
+                    <div className="brand-logo">
+                        <img src={logo} alt="" />
+                    </div>
+                    <div className="info">
+                        <div className="export">
+                            <button onClick={generatePDF} className="func-btn">
+                                Exportuj do PDF
+                                <i className="fa-solid fa-download"></i>
+                            </button>
+                            <button className="func-btn">
+                                Panel zarządzania
+                                <i className="fa-solid fa-hammer"></i>
+                            </button>
+                        </div>
+                        <div>
+                            <p>
+                                Aplikacja inwentarzowa stworzona przez
+                                <a href="https://github.com/Wierzba13" target="_blank">Raula Wierzbińskiego</a> oraz 
+                                <a href="https://github.com/Swedzinos" target="_blank">Kamila Banka</a> 
+                                na potrzeby praktyki zawodowej odbytej w Akademii Marynarki Wojennej - 2023r. 
+                            </p>
+                        </div>
+                    </div>
+                </footer>
             </>
         );
     }
