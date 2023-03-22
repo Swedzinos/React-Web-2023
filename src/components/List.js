@@ -249,9 +249,15 @@ class List extends React.Component {
 
             table.appendChild(thead);
 
-            for (let i = 0; i < data.length; i++) {
+            for (let i = 0; i < (SearchValue !== "" ? filteredData.length : data.length); i++) {
                 const row = tbody.insertRow();
-                const currData = data[i];
+                let currData = data[i];
+
+                if(SearchValue !== "") {
+                    currData = filteredData[i];
+                } else {
+                    currData = data[i];
+                }
 
                 const currRowData = [
                     currData["lab_id"],
