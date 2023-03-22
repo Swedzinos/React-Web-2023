@@ -29,7 +29,7 @@ app.get("/api/get/users", (req, res) => {
     });
 });
 app.get("/api/get/labs", (req, res) => {
-    const selectQuery = "SELECT `id` FROM `labs`";
+    const selectQuery = "SELECT `lab_id` FROM `labs`";
     db.query(selectQuery, (err, result) => {
         if (err) {
             console.log(err);
@@ -93,14 +93,17 @@ app.post("/api/create", (req, res) => {
 
 app.post("/api/update", (req, res) => {
     const id = req.body.id;
+    const labID = req.body.labID;
     const amount = req.body.amount;
     const name = req.body.name;
     const inventory_number = req.body.inventory_number;
+    const state = req.body.state;
+    const damaged = req.body.damaged;
     let place = req.body.place;
     let username = req.body.username;
     let category = req.body.category;
     
-    let queryupdate = "UPDATE `inventory_list` SET `amount` = ?, `place` = ?, `name` = ?, `inventory_number` = ?, `user_name` = ?, `category` = ? WHERE `id` = ?;";
+    let queryupdate = "UPDATE `inventory_list` SET  `lab_id` = ?, `amount` = ?, `place` = ?, `name` = ?, `inventory_number` = ?, `user_name` = ?, `category` = ?, `state` = ?, `damaged` = ? WHERE `id` = ?;";
     if(username == 'null' || username == ""){
         username = null;
     }
@@ -115,7 +118,7 @@ app.post("/api/update", (req, res) => {
         res.send({warn: "Uzupełnij potrzebne dane!"});
     } else {
         db.query(queryupdate,
-            [amount, place, name, inventory_number, username, category, id],
+            [labID, amount, place, name, inventory_number, username, category, state, damaged, id],
             (err, queryRes) => {
                 if (err) {
                     res.send(err.message);

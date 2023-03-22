@@ -28,11 +28,54 @@ class List extends React.Component {
             });
         }, []);
       
-        const [SearchValue, setSearchValue] = useState("");  
-        const filteredData = data.filter((val) => {
+        const [SearchValue, setSearchValue] = useState("");
+        const [searchAmout, setSearchAmount] = useState("");
+        const [searchPlace, setSearchPlace] = useState("");
+        const [searchName, setSearchName] = useState("");
+        const [searchNrInw, setSearchNrInw] = useState("");
+        const [searchUsername, setSearchUsername] = useState("");
+        const [searchCategory, setSearchCategory] = useState("");
+        const [searchType, setSearchType] = useState("");
+        const [searchDamaged, setSearchDamaged] = useState("");
+        const [searchLabId, setSearchLabId] = useState("");
+
+        const conditions = [SearchValue, searchLabId];
+        
+        let filteredData = data.filter((val) => {
             return Object.values(val).join('').toLowerCase().includes(SearchValue.toLowerCase())
         })
+        console.log(conditions);
+        filteredData = filteredData.filter((val) => {
+            return Object.values(val).join('').toLowerCase().includes(searchLabId.toLowerCase())
+        })
+        filteredData = filteredData.filter((val) => {
+            return Object.values(val).join('').toLowerCase().includes(searchAmout.toLowerCase())
+        })
+        filteredData = filteredData.filter((val) => {
+            return Object.values(val).join('').toLowerCase().includes(searchPlace.toLowerCase())
+        })
+        filteredData = filteredData.filter((val) => {
+            return Object.values(val).join('').toLowerCase().includes(searchName.toLowerCase())
+        })
+        filteredData = filteredData.filter((val) => {
+            return Object.values(val).join('').toLowerCase().includes(searchNrInw.toLowerCase())
+        })
+        filteredData = filteredData.filter((val) => {
+            return Object.values(val).join('').toLowerCase().includes(searchUsername.toLowerCase())
+        })
+        filteredData = filteredData.filter((val) => {
+            return Object.values(val).join('').toLowerCase().includes(searchCategory.toLowerCase())
+        })
+        filteredData = filteredData.filter((val) => {
+            return Object.values(val).join('').toLowerCase().includes(searchType.toLowerCase())
+        })
+        filteredData = filteredData.filter((val) => {
+            return Object.values(val).join('').toLowerCase().includes(searchDamaged.toLowerCase())
+        })
 
+        
+        
+        
         const deleteHandler = (id) => {
             Axios.delete(`http://localhost:3002/delete/${id}`).then(res => {
                 alert(res.data.message);
@@ -44,26 +87,47 @@ class List extends React.Component {
                 console.log(err);
             });
         }
-        
+        const SearchColumn = (idk) => {
+            
+
+        }
         const showDataSearch = () => {
             const showSearchData = filteredData.slice(indexOfFirstPost, indexOfLastPost).map((val) => {
                 return (
                 <tr key={val.id} id={val.id}>
                     <td>{val.lab_id}</td>
-                    <td>{val.amount}</td>
+                    <td className="cell-amount">
+                        <InpData value={val.amount} inpType="number"/>
+                    </td>
                     <td className="select-cell-place">
                             <SelectData url="places" dataToShow="name" columntoshow={val.place}/>
                     </td>
-                    <td>{val.name}</td>
-                    <td>{val.inventory_number}</td>
+                    <td className="cell-name">
+                        <InpData value={val.name} inpType="text"/>
+                    </td>
+                    <td className="cell-inventory_number">
+                        <InpData value={val.inventory_number} inpType="text"/>
+                    </td>
                     <td className="select-cell-user">
                         <SelectData url="users" dataToShow="username" columntoshow={val.user_name}/>
                     </td>
                     <td className="select-cell-category">
-                            <SelectData url="categories" dataToShow="category_name" columntoshow={val.category}/>
+                        <SelectData url="categories" dataToShow="category_name" columntoshow={val.category}/>
                     </td>
-                    <td>{val.state}</td>
-                    <td>{val.damaged}</td>
+                    <td className="select-cell-state">
+                        <select className="addElementTable" name="rodzajsprzetu">
+                            <option value="nie_zmieniono">{val.state}</option>
+                            <option value="Stanowy">Stanowy</option>
+                            <option value="Bezstanowy">Bezstanowy</option>
+                        </select>
+                    </td>
+                    <td className="select-cell-damaged">
+                        <select className="addElementTable" name="dowybrakowania">
+                            <option value="nie_zmieniono">{val.damaged}</option>
+                            <option value="Tak">Tak</option>
+                            <option value="Nie">Nie</option>
+                        </select>
+                    </td>
                     <td>
                         <button onClick={() => submitUpdatePost(val.id)} className="func-btn">
                             <i className="fa-solid fa-pen-to-square"></i>
@@ -160,7 +224,7 @@ class List extends React.Component {
         const tableData = (
             <tr id="insertDataRow">
                 <td>
-                    <SelectData url="labs" dataToShow="id" innerRef={lab_id} />
+                    <SelectData url="labs" dataToShow="lab_id" innerRef={lab_id} />
                 </td>
                 <td>
                     <div className="inp-box">
@@ -223,15 +287,21 @@ class List extends React.Component {
             const inventoryNumberToChange = row.querySelector(".cell-inventory_number input").value;
             const usernameToChange = row.querySelector(".select-cell-user select").value;
             const categoryToChange = row.querySelector(".select-cell-category select").value;
+            const stateToChange = row.querySelector(".select-cell-state select").value;
+            const damagedToChange = row.querySelector(".select-cell-damaged select").value;
+            const labidToChange = row.querySelector(".select-cell-labid select").value;
 
             Axios.post("http://localhost:3002/api/update", {
                 id: id,
+                labID: labidToChange,
                 amount: amountToChange,
                 place: placeToChange,
                 name: nameToChange,
                 inventory_number: inventoryNumberToChange,
                 username: usernameToChange,
-                category: categoryToChange
+                category: categoryToChange,
+                state: stateToChange,
+                damaged: damagedToChange
             }).then(res => {
                 if(res.data.warn) {
                     alert(res.data.warn);
@@ -331,12 +401,26 @@ class List extends React.Component {
                 </div>
             );
         }
+        const InpSearch = ({value}) => {
+
+            return (
+                <div className="inp-box">
+                    <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchLabId(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = {value}/>
+                    <span className="focus-border">
+                        <i />
+                    </span>
+                </div>
+
+            );
+        }
         
         const showData = () =>{
             return(
                 currentData.map((val) => (
                     <tr key={val.id} id={val.id}>
-                        <td>{val.lab_id}</td>
+                        <td className="select-cell-labid">
+                            <SelectData url="labs" dataToShow="lab_id" columntoshow={val.lab_id} />
+                        </td>
                         <td className="cell-amount">
                             <InpData value={val.amount} inpType="number"/>
                         </td>
@@ -355,8 +439,20 @@ class List extends React.Component {
                         <td className="select-cell-category">
                             <SelectData url="categories" dataToShow="category_name" columntoshow={val.category}/>
                         </td>
-                        <td>{val.state}</td>
-                        <td>{val.damaged}</td>
+                        <td className="select-cell-state">
+                            <select className="addElementTable" name="rodzajsprzetu">
+                                <option value={val.state}>{val.state}</option>
+                                <option value="Stanowy">Stanowy</option>
+                                <option value="Bezstanowy">Bezstanowy</option>
+                            </select>
+                        </td>
+                        <td className="select-cell-damaged">
+                            <select className="addElementTable" name="dowybrakowania">
+                                <option value={val.damaged}>{val.damaged}</option>
+                                <option value="Tak">Tak</option>
+                                <option value="Nie">Nie</option>
+                            </select>
+                        </td>
                         <td>
                             <button className="func-btn" onClick={() => submitUpdatePost(val.id)}>
                                 <i className="fa-solid fa-pen-to-square"></i>
@@ -404,7 +500,80 @@ class List extends React.Component {
                         </h2>
                     </div>
                 </nav>
-            
+                <section id="SearchColumns">
+                    <div className="inp-column-box inp-search-labs">
+                        <div className="inp-box">
+                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchLabId(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Szukaj..."/>
+                            <span className="focus-border">
+                                <i />
+                            </span>
+                        </div>
+                    </div>
+                    <div className="inp-column-box inp-search-lab">
+                        <div className="inp-box">
+                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchAmount(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Szukaj..."/>
+                            <span className="focus-border">
+                                <i />
+                            </span>
+                        </div>
+                    </div>
+                    <div className="inp-column-box inp-search-lab"> 
+                        <div className="inp-box">
+                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchPlace(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Szukaj..."/>
+                            <span className="focus-border">
+                                <i />
+                            </span>
+                        </div>
+                    </div>
+                    <div className="inp-column-box inp-search-lab">
+                        <div className="inp-box">
+                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchName(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Szukaj..."/>
+                            <span className="focus-border">
+                                <i />
+                            </span>
+                        </div>
+                    </div>
+                    <div className="inp-column-box inp-search-lab">
+                        <div className="inp-box">
+                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchNrInw(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Szukaj..."/>
+                            <span className="focus-border">
+                                <i />
+                            </span>
+                        </div>
+                    </div>
+                    <div className="inp-column-box inp-search-lab">
+                        <div className="inp-box">
+                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchUsername(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Szukaj..."/>
+                            <span className="focus-border">
+                                <i />
+                            </span>
+                        </div>
+                    </div>
+                    <div className="inp-column-box inp-search-lab">
+                        <div className="inp-box">
+                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchCategory(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Szukaj..."/>
+                            <span className="focus-border">
+                                <i />
+                            </span>
+                        </div>
+                    </div>
+                    <div className="inp-column-box inp-search-lab">
+                        <div className="inp-box">
+                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchType(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Szukaj..."/>
+                            <span className="focus-border">
+                                <i />
+                            </span>
+                        </div>
+                    </div>
+                    <div className="inp-column-box inp-search-lab">
+                        <div className="inp-box">
+                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchDamaged(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Szukaj..."/>
+                            <span className="focus-border">
+                                <i />
+                            </span>
+                        </div>
+                    </div>
+                </section>
                 { showDashboard === false ? // change to false after complete development
                     ( <section>
                         <div className="table-wrapper">
@@ -426,7 +595,7 @@ class List extends React.Component {
                                 
                                 <tbody>
                                     {tableData}
-                                    { SearchValue === undefined || SearchValue === ""  ? showData() : showDataSearch() }
+                                    { (SearchValue === undefined || SearchValue === "")  ? showData() : showDataSearch() }
                                 </tbody>
                             </table>
         

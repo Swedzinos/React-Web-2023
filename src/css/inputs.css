@@ -65,6 +65,10 @@ select:focus {
 .inp-box {
     position: relative;
 }
+.inp-column-box{
+    position: relative;
+    width: 11%;
+}
 
 .inp-effect {
     width: 100%; 
