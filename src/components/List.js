@@ -216,22 +216,32 @@ class List extends React.Component {
         );
 
         const submitUpdatePost = async (id) => {
-            // let username,place,category = "";
             const row = document.getElementById(id);
-            let usernameToChange = row.querySelector(".select-cell-user select").value !== "" ? row.querySelector(".select-cell-user select").value : null;
-            let placeToChange = row.querySelector(".select-cell-place select").value;
-            let categoryToChange = row.querySelector(".select-cell-category select").value;
+            const amountToChange = row.querySelector(".cell-amount input").value;
+            const placeToChange = row.querySelector(".select-cell-place select").value;
+            const nameToChange = row.querySelector(".cell-name input").value;
+            const inventoryNumberToChange = row.querySelector(".cell-inventory_number input").value;
+            const usernameToChange = row.querySelector(".select-cell-user select").value;
+            const categoryToChange = row.querySelector(".select-cell-category select").value;
 
             Axios.post("http://localhost:3002/api/update", {
-                username: usernameToChange,
+                id: id,
+                amount: amountToChange,
                 place: placeToChange,
-                category: categoryToChange,
-                id: id
+                name: nameToChange,
+                inventory_number: inventoryNumberToChange,
+                username: usernameToChange,
+                category: categoryToChange
             }).then(res => {
-                alert(res.data.message);
-                Axios.get(`http://localhost:3002/api/get/`).then((data) => {
-                    setdata(data.data);
-                });
+                if(res.data.warn) {
+                    alert(res.data.warn);
+                } else {
+                    alert(res.data.message);
+                    Axios.get(`http://localhost:3002/api/get/`).then((data) => {
+                        setdata(data.data);
+                        console.log("T");
+                    });
+                }
             }).catch(err => {
                 alert("Błąd!");
                 console.log(err);
@@ -311,18 +321,34 @@ class List extends React.Component {
             setdata(sorted)
             paginate(1)
         };
+        const InpData = ({value, inpType}) => {
+            return (
+                <div className="inp-box">
+                    <input className="inp-effect" type={inpType} defaultValue={value} min={0} />
+                    <span className="focus-border">
+                        <i />
+                    </span>
+                </div>
+            );
+        }
         
         const showData = () =>{
             return(
                 currentData.map((val) => (
                     <tr key={val.id} id={val.id}>
                         <td>{val.lab_id}</td>
-                        <td>{val.amount}</td>
+                        <td className="cell-amount">
+                            <InpData value={val.amount} inpType="number"/>
+                        </td>
                         <td className="select-cell-place">
                             <SelectData url="places" dataToShow="name" columntoshow={val.place}/>
                         </td>
-                        <td>{val.name}</td>
-                        <td>{val.inventory_number}</td>
+                        <td className="cell-name">
+                            <InpData value={val.name} inpType="text"/>
+                        </td>
+                        <td className="cell-inventory_number">
+                            <InpData value={val.inventory_number} inpType="text"/>
+                        </td>
                         <td className="select-cell-user">
                             <SelectData url="users" dataToShow="username" columntoshow={val.user_name}/>
                         </td>

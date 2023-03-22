@@ -21,9 +21,13 @@ const DashboardForm = ({sectionName, apiEndpoint}) => {
             colName: inpVal.current.value
             }).then(res => {
                 alert(res.data.message);
-                Axios.get(URL).then((data) => {
-                    setData(data.data);
-                });
+
+                if(res.data.successed) {
+                    Axios.get(URL).then((data) => {
+                        setData(data.data);
+                    });
+                    inpVal.current.value = "";
+                }
             }).catch(err => {
                 alert("Błąd");
             })
@@ -32,15 +36,19 @@ const DashboardForm = ({sectionName, apiEndpoint}) => {
         }
     }
 
-    const removeHandler = async (e, colName) => {
+    const removeHandler = async (e) => {
         e.preventDefault();
 
         if(inpVal.current.value !== "") {
             await Axios.delete(`http://localhost:3002/delete/${apiEndpoint}/${inpVal.current.value}`).then(res => {
-            alert(res.data.message);
-            Axios.get(URL).then((data) => {
-                setData(data.data);
-            });
+                alert(res.data.message);
+
+                if(res.data.successed) {
+                    Axios.get(URL).then((data) => {
+                        setData(data.data);
+                    });
+                    inpVal.current.value = "";
+                }
             }).catch(err => {
                 alert("Błąd");
                 console.log(err);

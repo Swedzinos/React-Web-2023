@@ -93,10 +93,14 @@ app.post("/api/create", (req, res) => {
 
 app.post("/api/update", (req, res) => {
     const id = req.body.id;
-    let username = req.body.username;
+    const amount = req.body.amount;
+    const name = req.body.name;
+    const inventory_number = req.body.inventory_number;
     let place = req.body.place;
+    let username = req.body.username;
     let category = req.body.category;
-    let queryupdate = "UPDATE `inventory_list` SET `user_name`= ?, `place`= ?, `category`= ? WHERE `id` =  "+ id +" ;";
+    
+    let queryupdate = "UPDATE `inventory_list` SET `amount` = ?, `place` = ?, `name` = ?, `inventory_number` = ?, `user_name` = ?, `category` = ? WHERE `id` = ?;";
     if(username == 'null' || username == ""){
         username = null;
     }
@@ -107,23 +111,27 @@ app.post("/api/update", (req, res) => {
         category = null;
     }
 
-    db.query(queryupdate,
-        [username, place, category, id],
-        (err, queryRes) => {
-            if (err) {
-                res.send(err.message);
-                console.log(err);
-            }
+    if(amount.trim().replace(" ", "") == "" || name.trim().replace(" ", "") == "" || inventory_number.trim().replace(" ", "") =="") {
+        res.send({warn: "Uzupełnij potrzebne dane!"});
+    } else {
+        db.query(queryupdate,
+            [amount, place, name, inventory_number, username, category, id],
+            (err, queryRes) => {
+                if (err) {
+                    res.send(err.message);
+                    console.log(err);
+                }
 
-            if(queryRes.changedRows > 0){
-                res.send({message: "Dane zmieniono pomyślnie"});
-            }else{
-                res.send({message: "Zmień dane aby zatwierdzić zmiany"});
-            }
+                if(queryRes.changedRows > 0){
+                    res.send({message: "Dane zmieniono pomyślnie"});
+                }else{
+                    res.send({message: "Zmień dane aby zatwierdzić zmiany"});
+                }
 
-            console.log(queryRes);
-        }
-    );
+                console.log(queryRes);
+            }
+        );
+    }
 });
 
 const encrypt = (content) => {
@@ -175,7 +183,7 @@ app.post("/api/create/places", (req, res) => {
                 res.send({message: "Nieprawidłowe dane!"});
                 console.log(err.sqlMessage);
             }
-            res.send({message: "Dodano"});
+            res.send({message: "Dodano", successed: true});
         }
     );
 });
@@ -190,7 +198,7 @@ app.post("/api/create/users", (req, res) => {
                 res.send({message: "Nieprawidłowe dane!"});
                 console.log(err.sqlMessage);
             }
-            res.send({message: "Dodano"});
+            res.send({message: "Dodano", successed: true});
         }
     );
 });
@@ -205,7 +213,7 @@ app.post("/api/create/categories", (req, res) => {
                 res.send({message: "Nieprawidłowe dane!"});
                 console.log(err.sqlMessage);
             }
-            res.send({message: "Dodano"});
+            res.send({message: "Dodano", successed: true});
         }
     );
 });
@@ -223,7 +231,7 @@ app.delete("/delete/places/:colName", (req, res) => {
         if(queryRes.affectedRows <= 0){
             res.send({message: "Brak pasujących danych!"})
         } else {
-            res.send({message: "Usunięto"})
+            res.send({message: "Usunięto", successed: true})
         }
         console.log(queryRes);
     })
@@ -242,7 +250,7 @@ app.delete("/delete/users/:colName", (req, res) => {
         if(queryRes.affectedRows <= 0){
             res.send({message: "Brak pasujących danych!"})
         } else {
-            res.send({message: "Usunięto"})
+            res.send({message: "Usunięto", successed: true})
         }
         console.log(queryRes);
     })
@@ -261,7 +269,7 @@ app.delete("/delete/categories/:colName", (req, res) => {
         if(queryRes.affectedRows <= 0){
             res.send({message: "Brak pasujących danych!"})
         } else {
-            res.send({message: "Usunięto"})
+            res.send({message: "Usunięto", successed: true})
         }
         console.log(queryRes);
     })
