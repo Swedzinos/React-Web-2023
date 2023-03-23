@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 22 Mar 2023, 23:08
--- Wersja serwera: 10.4.11-MariaDB
--- Wersja PHP: 7.2.28
+-- Czas generowania: 23 Mar 2023, 17:21
+-- Wersja serwera: 10.4.27-MariaDB
+-- Wersja PHP: 8.1.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -31,17 +30,14 @@ SET time_zone = "+00:00";
 CREATE TABLE `categories` (
   `id` int(11) NOT NULL,
   `category_name` varchar(60) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Zrzut danych tabeli `categories`
 --
 
 INSERT INTO `categories` (`id`, `category_name`) VALUES
-(3, 'Elektronika'),
-(5, 'Kable'),
-(4, 'Mebel'),
-(6, 'Urządzenia pomiarowe');
+(1, 'Elektronika');
 
 -- --------------------------------------------------------
 
@@ -60,34 +56,14 @@ CREATE TABLE `inventory_list` (
   `category` varchar(60) DEFAULT NULL,
   `state` enum('Stanowy','Bezstanowy') NOT NULL,
   `damaged` enum('Tak','Nie') NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Zrzut danych tabeli `inventory_list`
 --
 
 INSERT INTO `inventory_list` (`id`, `lab_id`, `amount`, `place`, `name`, `inventory_number`, `user_name`, `category`, `state`, `damaged`) VALUES
-(71, '789Raul1012', 4, 'Parking', 'Opony', '420213769@#', 'Kamil Bank', 'Urządzenia pomiarowe', 'Bezstanowy', 'Nie'),
-(72, '123ADMIN456', 10, NULL, 'stoły', '159753456$@%12', NULL, 'Mebel', 'Stanowy', 'Nie'),
-(73, '123ADMIN456', 10, 'Piwnica', 'Krzesła', '15975365896*58/', NULL, 'Mebel', 'Stanowy', 'Nie'),
-(74, '789Raul1012', 1, 'Piwnica', 'Przedłużacz', '124578852/*85', 'Raul Wierzbiński', 'Kable', 'Bezstanowy', 'Tak'),
-(75, '123ADMIN456', 1, 'Piwnica', 'Monitor tracer', '25698745/8*0', NULL, 'Elektronika', 'Stanowy', 'Nie'),
-(76, '123ADMIN456', 1, NULL, 'TEST', 'TEST', 'Kamil Bank', 'Urządzenia pomiarowe', 'Stanowy', 'Nie'),
-(77, '123ADMIN456', 0, 'Parking', 'TEST', 'TEST', 'Raul Wierzbiński', 'Kable', 'Stanowy', 'Nie'),
-(78, '123ADMIN456', 9, 'Piwnica', 'TEST', 'TEST', 'Raul Wierzbiński', 'Mebel', 'Stanowy', 'Nie'),
-(79, '123ADMIN456', 23, 'Piwnica', 'TEST', 'TEST', NULL, 'Mebel', 'Bezstanowy', 'Tak'),
-(80, '789Raul1012', 5, NULL, 'TEST', 'TEST', 'Raul Wierzbiński', 'Kable', 'Bezstanowy', 'Nie'),
-(81, '123ADMIN456', 20, 'Parking', 'TEST', 'TEST', 'Raul Wierzbiński', NULL, 'Stanowy', 'Tak'),
-(82, '123ADMIN456', 1, NULL, 'T', 'T', NULL, NULL, 'Stanowy', 'Tak'),
-(83, '123ADMIN456', 1, NULL, 'T', 'T', NULL, NULL, 'Stanowy', 'Tak'),
-(84, '123ADMIN456', 1, NULL, 'T', 'T', NULL, NULL, 'Stanowy', 'Tak'),
-(85, '123ADMIN456', 2, NULL, 'T', 'T', NULL, NULL, 'Stanowy', 'Tak'),
-(86, '123ADMIN456', 1, NULL, 'T', 'T', NULL, NULL, 'Stanowy', 'Tak'),
-(87, '123ADMIN456', 5, NULL, 'T', 'T', NULL, NULL, 'Stanowy', 'Tak'),
-(88, '123ADMIN456', 69, NULL, 'T', 'T', NULL, NULL, 'Stanowy', 'Tak'),
-(89, '123ADMIN456', 420, NULL, 'T', 'T', NULL, NULL, 'Stanowy', 'Tak'),
-(90, '123ADMIN456', 1109, NULL, 'T', 'T', NULL, NULL, 'Stanowy', 'Tak'),
-(91, '123ADMIN456', 1444, NULL, 'T', '0TToM@N', NULL, NULL, 'Stanowy', 'Tak');
+(7, 'Michał Kucko', 1, 'Dziekanat', 'Rekord Powitalny :D', 'Usuń mnie!', NULL, NULL, 'Bezstanowy', 'Tak');
 
 -- --------------------------------------------------------
 
@@ -98,15 +74,14 @@ INSERT INTO `inventory_list` (`id`, `lab_id`, `amount`, `place`, `name`, `invent
 CREATE TABLE `labs` (
   `id` int(11) NOT NULL,
   `lab_id` varchar(120) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Zrzut danych tabeli `labs`
 --
 
 INSERT INTO `labs` (`id`, `lab_id`) VALUES
-(3, '123ADMIN456'),
-(4, '789Raul1012');
+(1, 'Michał Kucko');
 
 -- --------------------------------------------------------
 
@@ -118,14 +93,14 @@ CREATE TABLE `logins` (
   `id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
   `password` varchar(70) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Zrzut danych tabeli `logins`
 --
 
 INSERT INTO `logins` (`id`, `username`, `password`) VALUES
-(2, 'admin', '+wAd/P/RyJnzKXhxQGJC8JeuzxpTQszz680RYUYYjks=');
+(3, 'm.kucko2320', 'nleFlm2H7gl1wSH2mteRgqxUl1l7ihoDj75QHyymHO4=');
 
 -- --------------------------------------------------------
 
@@ -136,15 +111,14 @@ INSERT INTO `logins` (`id`, `username`, `password`) VALUES
 CREATE TABLE `places` (
   `id` int(11) NOT NULL,
   `name` varchar(200) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Zrzut danych tabeli `places`
 --
 
 INSERT INTO `places` (`id`, `name`) VALUES
-(2, 'Parking'),
-(1, 'Piwnica');
+(1, 'Dziekanat');
 
 -- --------------------------------------------------------
 
@@ -155,15 +129,14 @@ INSERT INTO `places` (`id`, `name`) VALUES
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(150) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Zrzut danych tabeli `users`
 --
 
 INSERT INTO `users` (`id`, `username`) VALUES
-(1, 'Kamil Bank'),
-(2, 'Raul Wierzbiński');
+(1, 'Michał Kucko');
 
 --
 -- Indeksy dla zrzutów tabel
@@ -214,44 +187,44 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `username` (`username`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT dla zrzuconych tabel
 --
 
 --
 -- AUTO_INCREMENT dla tabeli `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT dla tabeli `inventory_list`
 --
 ALTER TABLE `inventory_list`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT dla tabeli `labs`
 --
 ALTER TABLE `labs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT dla tabeli `logins`
 --
 ALTER TABLE `logins`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT dla tabeli `places`
 --
 ALTER TABLE `places`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT dla tabeli `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Ograniczenia dla zrzutów tabel
@@ -261,7 +234,7 @@ ALTER TABLE `users`
 -- Ograniczenia dla tabeli `inventory_list`
 --
 ALTER TABLE `inventory_list`
-  ADD CONSTRAINT `inventory_list_ibfk_1` FOREIGN KEY (`lab_id`) REFERENCES `labs` (`Lab_Id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `inventory_list_ibfk_1` FOREIGN KEY (`lab_id`) REFERENCES `labs` (`lab_id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `inventory_list_ibfk_3` FOREIGN KEY (`place`) REFERENCES `places` (`name`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `inventory_list_ibfk_4` FOREIGN KEY (`category`) REFERENCES `categories` (`category_name`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `inventory_list_ibfk_5` FOREIGN KEY (`user_name`) REFERENCES `users` (`username`) ON DELETE SET NULL ON UPDATE CASCADE;
