@@ -47,7 +47,7 @@ class List extends React.Component {
         });
         if(searchAmout !== "") {
             filteredData = filteredData.filter((val) => {
-                return val.amount === searchAmout;
+                return val.amount == searchAmout;
             });
         }
         if(searchPlace !== "") {
@@ -315,7 +315,6 @@ class List extends React.Component {
                     alert(res.data.message);
                     Axios.get(`http://localhost:3002/api/get/`).then((data) => {
                         setdata(data.data);
-                        console.log("T");
                     });
                 }
             }).catch(err => {
@@ -436,7 +435,7 @@ class List extends React.Component {
                     </div>
                 </nav>
 
-                <section id="SearchColumns">
+                <section id="SearchColumns" className="filters-section">
                     <div className="inp-column-box">
                         <div className="inp-box">
                             <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchLabId(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Nr. laboranta..."/>
@@ -447,7 +446,7 @@ class List extends React.Component {
                     </div>
                     <div className="inp-column-box">
                         <div className="inp-box">
-                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchAmount(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Ilość..."/>
+                            <input className="inp-effect" type="number" min={0} onChange={(e) => { setSearchAmount(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Ilość..."/>
                             <span className="focus-border">
                                 <i />
                             </span>
@@ -494,7 +493,6 @@ class List extends React.Component {
                         </div>
                     </div>
                     <div className="inp-column-box">
-                        {/* onChange={(e) => { setSearchType(e.target.value)}} onKeyUp={() => paginate(1)} */}
                         <select className="addElementTable" onChange={(e) => { setSearchType(e.target.value); paginate(1); }}>
                             <option value={null}></option>
                             <option value="Stanowy">Stanowy</option>
@@ -511,7 +509,7 @@ class List extends React.Component {
                     </div>
                 </section>
 
-                { showDashboard === false ? // change to false after complete development
+                { showDashboard === false ?
                     ( <section>
                         <div className="table-wrapper">
                             <table className="fl-table" ref={componentPDF}>

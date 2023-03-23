@@ -63,16 +63,6 @@ nav .brand {
     padding-left: 0.3em;
 }
 
-.function-tools {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: var(--primary);
-    color: var(--light);
-    box-shadow: 0px 5px 5px var(--accents), 0px -1px 3px var(--accents);
-    padding-bottom: 1.5em;
-}
 .filter-box {
     padding: 1em;
 }
@@ -96,6 +86,26 @@ nav .brand {
 
 section {
     display: flex;
+}
+
+.filters-section {
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75em;
+    padding: 1em 0 2em 0;
+    background-color: var(--primary);
+    color: var(--light);
+}
+.filters-section .inp-column-box input, 
+.filters-section .inp-column-box select {
+    background-color: var(--light);
+    color: var(--primary);
+    height: 35px
+}
+.filters-section .inp-column-box select {
+    width: 100%;
 }
 
 .table-wrapper {
@@ -132,6 +142,10 @@ button.func-btn:last-of-type { margin-right: 0; }
     border-bottom: 1px solid var(--primary);
 }
 
+#insertDataRow {
+    border-bottom: 2px solid var(--primary);
+}
+
 .fl-table td, .fl-table th {
     text-align: center;
     padding: 8px;
@@ -165,6 +179,9 @@ button.func-btn:last-of-type { margin-right: 0; }
     .fl-table {
         display: flex;;
         width: 100%;
+    }
+    #insertDataRow {
+        border-bottom: none;
     }
     .fl-table thead, 
     .fl-table tbody, 
