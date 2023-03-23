@@ -19,7 +19,6 @@ class List extends React.Component {
         const [postsPerPage] = useState(20);
         const indexOfLastPost = currentPage * postsPerPage;
         const indexOfFirstPost = indexOfLastPost - postsPerPage;
-        let currentData = data.slice(indexOfFirstPost, indexOfLastPost);
         const paginate = pageNumber => setCurrentPage(pageNumber);
         
         useEffect(() => {
@@ -38,43 +37,51 @@ class List extends React.Component {
         const [searchType, setSearchType] = useState("");
         const [searchDamaged, setSearchDamaged] = useState("");
         const [searchLabId, setSearchLabId] = useState("");
-
-        const conditions = [SearchValue, searchLabId];
         
         let filteredData = data.filter((val) => {
             return Object.values(val).join('').toLowerCase().includes(SearchValue.toLowerCase())
         })
-        console.log(conditions);
-        filteredData = filteredData.filter((val) => {
-            return Object.values(val).join('').toLowerCase().includes(searchLabId.toLowerCase())
-        })
-        filteredData = filteredData.filter((val) => {
-            return Object.values(val).join('').toLowerCase().includes(searchAmout.toLowerCase())
-        })
-        filteredData = filteredData.filter((val) => {
-            return Object.values(val).join('').toLowerCase().includes(searchPlace.toLowerCase())
-        })
-        filteredData = filteredData.filter((val) => {
-            return Object.values(val).join('').toLowerCase().includes(searchName.toLowerCase())
-        })
-        filteredData = filteredData.filter((val) => {
-            return Object.values(val).join('').toLowerCase().includes(searchNrInw.toLowerCase())
-        })
-        filteredData = filteredData.filter((val) => {
-            return Object.values(val).join('').toLowerCase().includes(searchUsername.toLowerCase())
-        })
-        filteredData = filteredData.filter((val) => {
-            return Object.values(val).join('').toLowerCase().includes(searchCategory.toLowerCase())
-        })
-        filteredData = filteredData.filter((val) => {
-            return Object.values(val).join('').toLowerCase().includes(searchType.toLowerCase())
-        })
-        filteredData = filteredData.filter((val) => {
-            return Object.values(val).join('').toLowerCase().includes(searchDamaged.toLowerCase())
-        })
 
-        
-        
+        filteredData = filteredData.filter((val) => {
+            return val.lab_id.toLowerCase().includes(searchLabId.toLowerCase());
+        });
+        if(searchAmout !== "") {
+            filteredData = filteredData.filter((val) => {
+                return val.amount === searchAmout;
+            });
+        }
+        if(searchPlace !== "") {
+            filteredData = filteredData.filter((val) => val.place !== null).filter((val) => {
+                return val.place.toLowerCase().includes(searchPlace.toLowerCase());
+            });
+        }
+        filteredData = filteredData.filter((val) => {
+            return val.name.toLowerCase().includes(searchName.toLowerCase());
+        });
+        filteredData = filteredData.filter((val) => {
+            return val.inventory_number.toLowerCase().includes(searchNrInw.toLowerCase());
+        });
+        if(searchUsername !== "") {
+            filteredData = filteredData.filter((val) => val.user_name !== null).filter((val) => {
+                return val.user_name.toLowerCase().includes(searchUsername.toLowerCase());
+            });
+        }
+        if(searchCategory !== "") {
+            filteredData = filteredData.filter((val) => val.category !== null).filter((val) => {
+                return val.category.toLowerCase().includes(searchCategory.toLowerCase());
+            });
+        }
+
+        if(searchType !== "") {
+            filteredData = filteredData.filter((val) => val.state !== null).filter((val) => {
+                return val.state === searchType;
+            });
+        }
+        if(searchDamaged !== "") {
+            filteredData = filteredData.filter((val) => val.damaged !== null).filter((val) => {
+                return val.damaged === searchDamaged;
+            });
+        }
         
         const deleteHandler = (id) => {
             Axios.delete(`http://localhost:3002/delete/${id}`).then(res => {
@@ -87,20 +94,19 @@ class List extends React.Component {
                 console.log(err);
             });
         }
-        const SearchColumn = (idk) => {
-            
 
-        }
         const showDataSearch = () => {
             const showSearchData = filteredData.slice(indexOfFirstPost, indexOfLastPost).map((val) => {
                 return (
                 <tr key={val.id} id={val.id}>
-                    <td>{val.lab_id}</td>
+                     <td className="select-cell-labid">
+                        <SelectData url="labs" dataToShow="lab_id" columntoshow={val.lab_id} />
+                    </td>
                     <td className="cell-amount">
                         <InpData value={val.amount} inpType="number"/>
                     </td>
                     <td className="select-cell-place">
-                            <SelectData url="places" dataToShow="name" columntoshow={val.place}/>
+                        <SelectData url="places" dataToShow="name" columntoshow={val.place}/>
                     </td>
                     <td className="cell-name">
                         <InpData value={val.name} inpType="text"/>
@@ -329,15 +335,9 @@ class List extends React.Component {
 
             table.appendChild(thead);
 
-            for (let i = 0; i < (SearchValue !== "" ? filteredData.length : data.length); i++) {
+            for (let i = 0; i < filteredData.length; i++) {
                 const row = tbody.insertRow();
-                let currData = data[i];
-
-                if(SearchValue !== "") {
-                    currData = filteredData[i];
-                } else {
-                    currData = data[i];
-                }
+                let currData = filteredData[i];
 
                 const currRowData = [
                     currData["lab_id"],
@@ -347,7 +347,7 @@ class List extends React.Component {
                     currData["inventory_number"],
                     currData["user_name"],
                     currData["category"],
-                    currData["amount"],
+                    currData["state"],
                     currData["damaged"] 
                 ];
 
@@ -401,71 +401,6 @@ class List extends React.Component {
                 </div>
             );
         }
-        const InpSearch = ({value}) => {
-
-            return (
-                <div className="inp-box">
-                    <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchLabId(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = {value}/>
-                    <span className="focus-border">
-                        <i />
-                    </span>
-                </div>
-
-            );
-        }
-        
-        const showData = () =>{
-            return(
-                currentData.map((val) => (
-                    <tr key={val.id} id={val.id}>
-                        <td className="select-cell-labid">
-                            <SelectData url="labs" dataToShow="lab_id" columntoshow={val.lab_id} />
-                        </td>
-                        <td className="cell-amount">
-                            <InpData value={val.amount} inpType="number"/>
-                        </td>
-                        <td className="select-cell-place">
-                            <SelectData url="places" dataToShow="name" columntoshow={val.place}/>
-                        </td>
-                        <td className="cell-name">
-                            <InpData value={val.name} inpType="text"/>
-                        </td>
-                        <td className="cell-inventory_number">
-                            <InpData value={val.inventory_number} inpType="text"/>
-                        </td>
-                        <td className="select-cell-user">
-                            <SelectData url="users" dataToShow="username" columntoshow={val.user_name}/>
-                        </td>
-                        <td className="select-cell-category">
-                            <SelectData url="categories" dataToShow="category_name" columntoshow={val.category}/>
-                        </td>
-                        <td className="select-cell-state">
-                            <select className="addElementTable" name="rodzajsprzetu">
-                                <option value={val.state}>{val.state}</option>
-                                <option value="Stanowy">Stanowy</option>
-                                <option value="Bezstanowy">Bezstanowy</option>
-                            </select>
-                        </td>
-                        <td className="select-cell-damaged">
-                            <select className="addElementTable" name="dowybrakowania">
-                                <option value={val.damaged}>{val.damaged}</option>
-                                <option value="Tak">Tak</option>
-                                <option value="Nie">Nie</option>
-                            </select>
-                        </td>
-                        <td>
-                            <button className="func-btn" onClick={() => submitUpdatePost(val.id)}>
-                                <i className="fa-solid fa-pen-to-square"></i>
-                            </button> 
-                            <button className="func-btn" onClick={() => deleteHandler(val.id)}>
-                                <i className="fa-solid fa-trash"></i>    
-                            </button> 
-                        </td>
-                    </tr>  
-                ))
-            );
-                
-        };
 
         const [showDashboard, setShowDashboard] = useState(false);
 
@@ -500,80 +435,82 @@ class List extends React.Component {
                         </h2>
                     </div>
                 </nav>
+
                 <section id="SearchColumns">
-                    <div className="inp-column-box inp-search-labs">
+                    <div className="inp-column-box">
                         <div className="inp-box">
-                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchLabId(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Szukaj..."/>
+                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchLabId(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Nr. laboranta..."/>
                             <span className="focus-border">
                                 <i />
                             </span>
                         </div>
                     </div>
-                    <div className="inp-column-box inp-search-lab">
+                    <div className="inp-column-box">
                         <div className="inp-box">
-                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchAmount(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Szukaj..."/>
+                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchAmount(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Ilość..."/>
                             <span className="focus-border">
                                 <i />
                             </span>
                         </div>
                     </div>
-                    <div className="inp-column-box inp-search-lab"> 
+                    <div className="inp-column-box"> 
                         <div className="inp-box">
-                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchPlace(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Szukaj..."/>
+                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchPlace(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Miejsce..."/>
                             <span className="focus-border">
                                 <i />
                             </span>
                         </div>
                     </div>
-                    <div className="inp-column-box inp-search-lab">
+                    <div className="inp-column-box">
                         <div className="inp-box">
-                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchName(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Szukaj..."/>
+                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchName(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Nazwa sprzętu..."/>
                             <span className="focus-border">
                                 <i />
                             </span>
                         </div>
                     </div>
-                    <div className="inp-column-box inp-search-lab">
+                    <div className="inp-column-box">
                         <div className="inp-box">
-                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchNrInw(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Szukaj..."/>
+                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchNrInw(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Nr. inwentarzowy..."/>
                             <span className="focus-border">
                                 <i />
                             </span>
                         </div>
                     </div>
-                    <div className="inp-column-box inp-search-lab">
+                    <div className="inp-column-box">
                         <div className="inp-box">
-                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchUsername(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Szukaj..."/>
+                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchUsername(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Użytkownik..."/>
                             <span className="focus-border">
                                 <i />
                             </span>
                         </div>
                     </div>
-                    <div className="inp-column-box inp-search-lab">
+                    <div className="inp-column-box">
                         <div className="inp-box">
-                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchCategory(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Szukaj..."/>
+                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchCategory(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Rodzaj sprzętu..."/>
                             <span className="focus-border">
                                 <i />
                             </span>
                         </div>
                     </div>
-                    <div className="inp-column-box inp-search-lab">
-                        <div className="inp-box">
-                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchType(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Szukaj..."/>
-                            <span className="focus-border">
-                                <i />
-                            </span>
-                        </div>
+                    <div className="inp-column-box">
+                        {/* onChange={(e) => { setSearchType(e.target.value)}} onKeyUp={() => paginate(1)} */}
+                        <select className="addElementTable" onChange={(e) => { setSearchType(e.target.value); paginate(1); }}>
+                            <option value={null}></option>
+                            <option value="Stanowy">Stanowy</option>
+                            <option value="Bezstanowy">Bezstanowy</option>
+                        </select>
+
                     </div>
-                    <div className="inp-column-box inp-search-lab">
-                        <div className="inp-box">
-                            <input className="inp-effect" type="text" min={0} onChange={(e) => { setSearchDamaged(e.target.value)}} onKeyUp={() => paginate(1)} placeholder = "Szukaj..."/>
-                            <span className="focus-border">
-                                <i />
-                            </span>
-                        </div>
+                    <div className="inp-column-box">
+                        <select className="addElementTable" onChange={(e) => { setSearchDamaged(e.target.value); paginate(1); }}>
+                            <option value={null}></option>
+                            <option value="Tak">Tak</option>
+                            <option value="Nie">Nie</option>
+                        </select>
                     </div>
                 </section>
+
                 { showDashboard === false ? // change to false after complete development
                     ( <section>
                         <div className="table-wrapper">
@@ -595,13 +532,13 @@ class List extends React.Component {
                                 
                                 <tbody>
                                     {tableData}
-                                    { (SearchValue === undefined || SearchValue === "")  ? showData() : showDataSearch() }
+                                    { showDataSearch() }
                                 </tbody>
                             </table>
         
                             <Pagination
                                 postsPerPage={postsPerPage}
-                                totalPosts={SearchValue ? filteredData.length : data.length}
+                                totalPosts={filteredData.length}
                                 currentPage={currentPage}
                                 paginate={paginate}
                             />
