@@ -3,7 +3,9 @@ import Axios from "axios";
 import List from "./List.js";
 import logoleft from "../images/login-logo.png";
 import logoright from "../images/footer-logo.png";
+import API_URL from "./API_URL.js";
 import "../css/Login.css";
+
 
 const Login = () => {
     const [username, setUsername] = useState("");
@@ -14,7 +16,7 @@ const Login = () => {
     const loginHandler = (e) => {
         e.preventDefault();
 
-        Axios.post("http://localhost:3002/login", {
+        Axios.post(`${API_URL}/login`, {
             username,
             password
         }).then((res) => {

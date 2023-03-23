@@ -2,9 +2,12 @@ import express from "express";
 import db from "./config/db.js";
 import cors from "cors";
 import crypto from "crypto";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
-const PORT = 3002;
+const PORT = process.env.PORT || 3002;
 app.use(cors());
 app.use(express.json());
 
@@ -130,8 +133,6 @@ app.post("/api/update", (req, res) => {
                 }else{
                     res.send({message: "Zmień dane aby zatwierdzić zmiany"});
                 }
-
-                console.log(queryRes);
             }
         );
     }
@@ -172,7 +173,7 @@ app.delete("/delete/:id", (req, res) => {
         } else {
             res.send({message: "Usunięto"})
         }
-        console.log(queryRes);
+
     })
 })
 
@@ -223,7 +224,6 @@ app.post("/api/create/categories", (req, res) => {
 
 app.delete("/delete/places/:colName", (req, res) => {
     const colName = req.params.colName;
-    console.log(colName);
    
     db.query("DELETE FROM `places` WHERE `name` = ?;", [colName], (err, queryRes) => {
         if(err) {
@@ -242,7 +242,6 @@ app.delete("/delete/places/:colName", (req, res) => {
 
 app.delete("/delete/users/:colName", (req, res) => {
     const colName = req.params.colName;
-    console.log(colName);
    
     db.query("DELETE FROM `users` WHERE `username` = ?;", [colName], (err, queryRes) => {
         if(err) {
@@ -261,7 +260,6 @@ app.delete("/delete/users/:colName", (req, res) => {
 
 app.delete("/delete/categories/:colName", (req, res) => {
     const colName = req.params.colName;
-    console.log(colName);
    
     db.query("DELETE FROM `categories` WHERE `category_name` = ?;", [colName], (err, queryRes) => {
         if(err) {
@@ -274,10 +272,9 @@ app.delete("/delete/categories/:colName", (req, res) => {
         } else {
             res.send({message: "Usunięto", successed: true})
         }
-        console.log(queryRes);
     })
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on ${PORT}`);
+app.listen(PORT, process.env.SERVER_ADDR, () => {
+    console.log(`Server is running on ${process.env.SERVER_ADDR}:${PORT}`);
 });

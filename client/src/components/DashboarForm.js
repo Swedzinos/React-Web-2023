@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import Axios from "axios";
+import API_URL from "./API_URL.js";
 
 const DashboardForm = ({sectionName, apiEndpoint}) => {
 
     const [data, setData] = useState([]);
     const inpVal = useRef();
-    const URL = `http://localhost:3002/api/get/${apiEndpoint}`;
+    const URL = `${API_URL}/api/get/${apiEndpoint}`;
 
     useEffect(() => {
         Axios.get(URL).then((data) => {
@@ -17,7 +18,7 @@ const DashboardForm = ({sectionName, apiEndpoint}) => {
         e.preventDefault();
 
         if(inpVal.current.value !== "") {
-            await Axios.post(`http://localhost:3002/api/create/${apiEndpoint}`, {
+            await Axios.post(`${API_URL}/api/create/${apiEndpoint}`, {
             colName: inpVal.current.value
             }).then(res => {
                 alert(res.data.message);
@@ -40,7 +41,7 @@ const DashboardForm = ({sectionName, apiEndpoint}) => {
         e.preventDefault();
 
         if(inpVal.current.value !== "") {
-            await Axios.delete(`http://localhost:3002/delete/${apiEndpoint}/${inpVal.current.value}`).then(res => {
+            await Axios.delete(`${API_URL}/delete/${apiEndpoint}/${inpVal.current.value}`).then(res => {
                 alert(res.data.message);
 
                 if(res.data.successed) {

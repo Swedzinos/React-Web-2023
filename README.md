@@ -10,7 +10,9 @@
 1. Download code
 2. Create database named `inventory` on your server
 3. Import database from `server/MYSQLdatabase/inventory.sql`
-4. Change connection options in `server/config/db.js`
-5. Go to project root folder and execute command `npm install`
-6. Go to `server` directory and run server by command `node index.js`
-7. Go to root folder of project and run app by command `npm start`
+4. Change connection options in `server/.env`
+5. Change address options in `client/src/components/API_URL.js` (ADDRESS AND PORT MUST BE THE SAME AS IN THE `server/.env`)
+6. Go to `server` folder and execute command `npm install` and then run `npm start`
+7. Go to `client` folder and execute command `npm install` and then run `npm start`
+
+***If you had any error please pay attention to point 5.***

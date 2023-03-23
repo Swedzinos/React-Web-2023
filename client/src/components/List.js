@@ -5,6 +5,7 @@ import logo from "../images/main-logo.png";
 import { useReactToPrint } from "react-to-print";
 import Dashboard from "./Dashboard.js";
 import Pagination from "./Pagination.js";
+import API_URL from "./API_URL.js";
 import "../css/List.css";
 class List extends React.Component {
     constructor(props) {
@@ -22,7 +23,7 @@ class List extends React.Component {
         const paginate = pageNumber => setCurrentPage(pageNumber);
         
         useEffect(() => {
-            Axios.get(`http://localhost:3002/api/get/`).then((data) => {
+            Axios.get(`${API_URL}/api/get/`).then((data) => {
                 setdata(data.data);
             });
         }, []);
@@ -84,9 +85,9 @@ class List extends React.Component {
         }
         
         const deleteHandler = (id) => {
-            Axios.delete(`http://localhost:3002/delete/${id}`).then(res => {
+            Axios.delete(`${API_URL}/delete/${id}`).then(res => {
                 alert(res.data.message);
-                Axios.get(`http://localhost:3002/api/get/`).then((data) => {
+                Axios.get(`${API_URL}/api/get/`).then((data) => {
                 setdata(data.data);
                 });
             }).catch(err => {
@@ -122,16 +123,32 @@ class List extends React.Component {
                     </td>
                     <td className="select-cell-state">
                         <select className="addElementTable" name="rodzajsprzetu">
-                            <option value="nie_zmieniono">{val.state}</option>
-                            <option value="Stanowy">Stanowy</option>
-                            <option value="Bezstanowy">Bezstanowy</option>
+                            <option value={val.state}>{val.state}</option>
+                            {val.state == "Stanowy" ? <option value="Bezstanowy">Bezstanowy</option> : null}
+                            {val.state == "Bezstanowy" ? <option value="Stanowy">Stanowy</option> : null}
+                            
+                            {val.state == "" || val.state == null ? 
+                                <>
+                                    <option value="Stanowy">Stanowy</option>
+                                    <option value="Bezstanowy">Bezstanowy</option>
+                                </> 
+                                : null
+                            }
                         </select>
                     </td>
                     <td className="select-cell-damaged">
                         <select className="addElementTable" name="dowybrakowania">
-                            <option value="nie_zmieniono">{val.damaged}</option>
-                            <option value="Tak">Tak</option>
-                            <option value="Nie">Nie</option>
+                            <option value={val.damaged}>{val.damaged}</option>
+                            {val.damaged == "Tak" ? <option value="Nie">Nie</option> : null}
+                            {val.damaged == "Nie" ? <option value="Tak">Tak</option> : null}
+                            
+                            {val.damaged == "" || val.damaged == null ? 
+                                <>
+                                    <option value="Tak">Tak</option>
+                                    <option value="Nie">Nie</option>
+                                </> 
+                                : null
+                            }
                         </select>
                     </td>
                     <td>
@@ -200,7 +217,7 @@ class List extends React.Component {
         const submitPost = async () => {
             if(amount.current.value !== "" && name.current.value !== "" && inventory_number.current.value !== "")
             {
-                await Axios.post("http://localhost:3002/api/create", {
+                await Axios.post(`${API_URL}/api/create`, {
                     lab_id: lab_id.current.value,
                     amount: amount.current.value,
                     place_id: place.current.value,
@@ -212,7 +229,7 @@ class List extends React.Component {
                     damaged: damaged.current.value,
                 }).then(res => {
                     alert(res.data.message);
-                    Axios.get(`http://localhost:3002/api/get/`).then((data) => {
+                    Axios.get(`${API_URL}/api/get/`).then((data) => {
                         setdata(data.data);
                     });
                     amount.current.value = "";
@@ -297,7 +314,7 @@ class List extends React.Component {
             const damagedToChange = row.querySelector(".select-cell-damaged select").value;
             const labidToChange = row.querySelector(".select-cell-labid select").value;
 
-            Axios.post("http://localhost:3002/api/update", {
+            Axios.post(`${API_URL}/api/update`, {
                 id: id,
                 labID: labidToChange,
                 amount: amountToChange,
@@ -313,7 +330,7 @@ class List extends React.Component {
                     alert(res.data.warn);
                 } else {
                     alert(res.data.message);
-                    Axios.get(`http://localhost:3002/api/get/`).then((data) => {
+                    Axios.get(`${API_URL}/api/get/`).then((data) => {
                         setdata(data.data);
                     });
                 }
